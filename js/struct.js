@@ -1,95 +1,57 @@
 /**
- * Created by DannyWang on 2017/5/5.
+ * Struct Business
+ * Created by DannyWang
  */
-var gKeyCount = 1;
 
-function GetRequest() {
-    var url = location.search; //获取url中"?"符后的字串
-    var theRequest = new Object();
-    if (url.indexOf("?") != -1) {
-        var str = url.substr(1);
-        strs = str.split("&");
-        for (var i = 0; i < strs.length; i++) {
-            theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
-        }
-    }
-    return theRequest;
-}
-
-
-
-function deleteKeyInArray(array, item) {
-    array.splice(jQuery.inArray(item, array), 1);
-}
-
+var tbl_preview;
+// Init
 function initData() {
     var query_string = GetRequest();
-    var fn = query_string['fn'];
-    var api_id = query_string['api_id'];
-    fn = fn ? fn : 'new';
-    // require_options = [
-    //     {text: 'v', value: 1},
-    //     {text: 'x', value: 0}
-    // ];
+    var name = query_string['name'];
 
-    if (fn === 'new') {
-//alert('new page');
-        struct_data = {};
-
-        input_params = [];
-    } else if (fn === 'update') {
+    if (name) {
+        getStructDataFromDB(name);
+        $("#btnSave").html("Update Struct &raquo;");
 
     } else {
+        $("#btnPreview").show();
         struct_data = {
-            struct_name: '会员信息',
-            struct_desp: '会员信息desp',
-            params: 1,
+            struct_name: '',
+            struct_desp: '',
+            params: []
         };
-
-
-        params = [
-            {
-                id: 1,
-                name: 'name1', type: 'int', desp: 'desp1',
-                is_array: {
-                    state: false
-                },
-                is_required: {
-                    state: true
-                }
-            }
-            ,
-            {
-                id: 2,
-                name: 'name2', type: 'string', desp: 'desp2',
-                is_array: {
-                    state: true
-                },
-                is_required: {
-                    state: false
-                }
-            },
-            {
-                id: 3,
-                name: 'name3', type: 'float', desp: 'desp3',
-                is_array: {
-                    state: false
-                },
-                is_required: {
-                    state: false
-                }
-            }
-        ];
-
-
-
+        bindForm();
     }
-
-
 }
-$(function () {//页面加载完成后绑定页面按钮的点击事件
-    initData();
 
+// Main
+$(function () {//页面加载完成后绑定页面按钮的点击事件
+    initDatabase();
+    initData();
+});
+
+function showPreviewTable() {
+    checkApiData(struct_data);
+    $("#tbl_preview").show();
+    if (!tbl_preview) {
+        tbl_preview = new Vue({
+            el: '#tbl_preview',
+            data: {
+                struct_data: struct_data
+            },
+            methods: {
+                format_type: function (type, is_array) {
+                    return getFormatType(type, is_array);
+                },
+                mark_desp: function (val) {
+                    return redMarkHtml(val);
+                }
+            }
+        });
+    }
+}
+
+function bindForm() {
     var base_info = new Vue({
         el: '#api_base_info',
         data: {
@@ -97,10 +59,10 @@ $(function () {//页面加载完成后绑定页面按钮的点击事件
         }
     });
 
-    var form = new Vue({
+    var params_form = new Vue({
         el: '#params_keys',
         data: {
-            params: params
+            params: struct_data.params
         },
         methods: {
             // 删除当前参数
@@ -113,19 +75,56 @@ $(function () {//页面加载完成后绑定页面按钮的点击事件
                 }
             },
             alocked: function (state) {
-                this.item.state = !state; //this关键字指定修改当前项数据值
             }
         }
     });
+}
 
+// 检查参数信息，移除name为空的参数
+function checkApiData(api_data) {
+    if (api_data.params.length > 0) {
+        for (var i = 0; i < api_data.params.length; i++) {
+            if (!api_data.params[i].name) {
+                deleteKeyInArray(api_data.params, api_data.params[i]);
+            }
+        }
+    }
 
+}
 
-});
+function showResult(data) {
+    $("#sp_code_div").show();
+    $("#sp_code_result").empty();
+    $("#sp_code_result").html(data);
+}
 
+function generateWikiCode(struct_data) {
+    var result = '';
+    var line = '<br/>';
+    var tab = '&nbsp;&nbsp;&nbsp;&nbsp;';
+    var title = tab + '||=字段 =||=必选/可选=||= 类型 =||=  说明 =||';
+    if (struct_data) {
+        result += '* {0}({1})'.format(struct_data.struct_desp, struct_data.struct_name);
+        result += line;
+        result += title;
+        result += line;
+        if (struct_data.params && struct_data.params.length > 0) {
+            struct_data.params.forEach(function (val, index, arr) {
+                var format_type = getFormatType(val.type, val.is_array.state);
+                result += tab + '||{0} ||{1} ||{2} ||{3} ||'.format(val.name, val.is_required.state ? '必选' : '可选', format_type, val.desp);
+                result += line;
+            })
+        }
+    }
+    return result;
+}
+
+// Buttons click
 $("#btn_addKey").click(function () {
+    var timestamp = new Date().getTime();
     var new_obj = {
-        id: 4,
-        name: 'name4', type: 'int', desp: 'desp4',
+        id: timestamp,
+        name: '', type: '', desp: '',
         is_array: {
             state: false
         },
@@ -133,73 +132,19 @@ $("#btn_addKey").click(function () {
             state: false
         }
     };
-    params.push(new_obj);
+    struct_data.params.push(new_obj);
 });
-
-
 
 $("#btnSave").click(function () {
-
-    var re={};
-    re.params=params;
-    re.struct_data=struct_data;
-    alert(JSON.stringify(re, null, "\t"));
-    $("#sp_result").text(JSON.stringify(re, null, "\t"));
-    //alert(JSON.stringify(api_data));
-
-//            var txtName = 'wj';
-//            var txtTitle = 'test';
-//            var txtWords = 'words';
-//            var db = getCurrentDb();
-//            //执行sql脚本，插入数据
-//            db.transaction(function (trans) {
-//                trans.executeSql("INSERT INTO Demo(uName,title,words) VALUES(?,?,?) ", [txtName, txtTitle, txtWords], function (ts, data) {
-//                }, function (ts, message) {
-//                    alert(message);
-//                });
-//            });
-//            showAllTheData();
+    checkApiData(struct_data);
+    syncStructData(struct_data);
 });
 
+$("#btnPreview").click(function () {
+    showPreviewTable();
+});
 
-///////////////------------------------------
-
-
-function getCurrentDb() {
-    //打开数据库，或者直接连接数据库参数：数据库名称，版本，概述，大小
-    //如果数据库不存在那么创建之
-    var db = openDatabase("myDb", "1.0", "it's to save demo data!", 1024 * 1024);
-    ;
-    return db;
-}
-//显示所有数据库中的数据到页面上去
-function showAllTheData() {
-    $("#tblData").empty();
-    var db = getCurrentDb();
-    db.transaction(function (trans) {
-        trans.executeSql("SELECT * FROM Demo ", [], function (ts, data) {
-            if (data) {
-                for (var i = 0; i < data.rows.length; i++) {
-                    appendDataToTable(data.rows.item(i));//获取某行数据的json对象
-                }
-            }
-        }, function (ts, message) {
-            alert(message);
-            var tst = message;
-        });
-    });
-}
-function appendDataToTable(data) {//将数据展示到表格里面
-    //uName,title,words
-    var txtName = data.uName;
-    var txtTitle = data.title;
-    var words = data.words;
-    var strHtml = "";
-    strHtml += "<tr>";
-    strHtml += "<td>" + txtName + "</td>";
-    strHtml += "<td>" + txtTitle + "</td>";
-    strHtml += "<td>" + words + "</td>";
-    strHtml += "</tr>";
-    $("#tblData").append(strHtml);
-}
-
+$("#btnGenWiki").click(function () {
+    var code = generateWikiCode(struct_data);
+    showResult(code);
+});

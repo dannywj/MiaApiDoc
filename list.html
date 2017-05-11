@@ -8,8 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Mia Api Test</title>
-    <script src="js/config.js" type="text/javascript"></script>
+    <title>Mia Api Doc List</title>
     <!-- Bootstrap core CSS -->
     <link href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 
@@ -26,20 +25,25 @@
     <!-- Static navbar -->
     <!-- Main component for a primary marketing message or call to action -->
     <div class="jumbotron" style="padding-top: 4px; margin-top: 20px;">
-        <h2>Mia API List</h2>
+        <h2>Mia API Doc List</h2>
+        <p>
+            <a id="btnNewApi" style="margin-top: 10px;" class="btn btn-info" href="api.html" target="_blank"
+               role="button">New Api &raquo;</a>
+            <a id="btnNewStruct" style="margin-top: 10px;" class="btn btn-info" href="struct.html" target="_blank"
+               role="button">New Struct &raquo;</a>
+        </p>
+
         <div id="sp_result_div" class="panel panel-info">
             <div id="tblData"></div>
             <div id="sp_result_div_title" class="panel-heading">API List</div>
             <div id="sp_result" class="panel-body" style="word-break: break-all;word-wrap: break-word;">
-                <!--<div class="list-group">-->
-                <!--<a href="#" class="list-group-item">-->
-                <!--Cras justo odio-->
-                <!--</a>-->
-                <!--<a href="#" class="list-group-item">Dapibus ac facilisis in</a>-->
-                <!--<a href="#" class="list-group-item">Morbi leo risus</a>-->
-                <!--<a href="#" class="list-group-item">Porta ac consectetur ac</a>-->
-                <!--<a href="#" class="list-group-item">Vestibulum at eros</a>-->
-                <!--</div>-->
+            </div>
+        </div>
+
+        <div id="sp_struct_div" class="panel panel-success">
+            <div id="tblData1"></div>
+            <div id="sp_struct_div_title" class="panel-heading">Struct List</div>
+            <div id="sp_struct" class="panel-body" style="word-break: break-all;word-wrap: break-word;">
             </div>
         </div>
     </div>
@@ -50,12 +54,12 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
 <script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script src="js/bootstrap.autocomplete.js"></script>
 <script src="js/db.js"></script>
 <script>
     $(function () {
         initDatabase();
         getAllApiList();
+        getAllStructList();
     });
 </script>
 </body>
