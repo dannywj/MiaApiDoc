@@ -63,6 +63,7 @@ function insertApiData(api_data) {
             [api_data.api_name, api_data.api_url, api_data.api_desp, JSON.stringify(api_data.input_params), JSON.stringify(api_data.output_params)],
             function (ts, data) {
                 alert('Add Success!');
+                window.location = 'api.html?id={0}'.format(data.insertId);
             }, function (ts, message) {
                 alert(message);
             });
@@ -75,6 +76,7 @@ function updateApiData(api_data) {
         trans.executeSql("UPDATE api_info set name=?,url=?,desp=?,input_params=?,output_params=? WHERE id=" + api_data.id,
             [api_data.api_name, api_data.api_url, api_data.api_desp, JSON.stringify(api_data.input_params), JSON.stringify(api_data.output_params)], function (ts, data) {
                 alert('Update Success!');
+                last_api_data = deepCopy(api_data);
             }, function (ts, message) {
                 alert(message);
             });
@@ -110,6 +112,23 @@ function getDataFromDB(id) {
 }
 
 // Struct Data Operation
+function checkStructExists(struct_data) {
+    var db = getCurrentDb();
+    db.transaction(function (trans) {
+        trans.executeSql("SELECT * FROM struct_info WHERE name=? ",
+            [struct_data.struct_name], function (ts, data) {
+                if (data && data.rows.length > 0) {
+                    alert('Add failure! The struct:[{0}] already exists.'.format(struct_data.struct_name));
+                } else {
+                    syncStructData(struct_data);
+                }
+            }, function (ts, message) {
+                console.log(message);
+                alert(message);
+            });
+    });
+}
+
 function syncStructData(struct_data) {
     var db = getCurrentDb();
     db.transaction(function (trans) {
@@ -134,6 +153,7 @@ function insertStructData(struct_data) {
             [struct_data.struct_name, struct_data.struct_desp, JSON.stringify(struct_data.params)],
             function (ts, data) {
                 alert('Add Success!');
+                window.location = 'struct.html?name={0}'.format(struct_data.struct_name);
             }, function (ts, message) {
                 alert(message);
             });
@@ -146,6 +166,7 @@ function updateStructData(struct_data) {
         trans.executeSql("UPDATE struct_info set name=?,desp=?,params=? WHERE id=" + struct_data.id,
             [struct_data.struct_name, struct_data.struct_desp, JSON.stringify(struct_data.params)], function (ts, data) {
                 alert('Update Success!');
+                last_struct_data = deepCopy(struct_data);
             }, function (ts, message) {
                 console.log(message);
                 alert(message);
@@ -171,7 +192,8 @@ function getStructDataFromDB(name) {
                     bindForm();
                     showPreviewTable();
                 } else {
-                    alert('Invalid name');
+                    alert('Invalid struct name');
+                    window.location = "struct.html";
                 }
             }
         }, function (ts, message) {
@@ -187,13 +209,13 @@ function getAllApiList() {
         trans.executeSql("SELECT * FROM api_info ", [], function (ts, data) {
             if (data) {
                 if (data.rows.length > 0) {
-                    var row = '<div class="list-group">';
+                    var row = '<table class="table table-bordered">';
                     for (var i = 0; i < data.rows.length; i++) {
-                        console.log(data.rows[i]);
                         var info = data.rows[i];
-                        row += '<a target="_blank" class="list-group-item"  href="api.html?id=' + info.id + '">' + info.id + '> ' + info.url + '  ' + info.name + '</a> ';
+                        var btn = '<a id="btn" class="btn btn-danger btn-xs" href="javascript:void(0);" role="button" onclick="deleteApi(' + info.id + ')">Delete &raquo;</a>';
+                        row += '<tr><td style="width: 70%"><a target="_blank"  href="api.html?id={0}"> {0}> {1}  {2}</a></td><td>{3}</td></tr>'.format(info.id, info.url, info.name, btn);
                     }
-                    row += '</div>';
+                    row += '</table>';
                     $("#sp_result").html(row);
                 } else {
                     alert('no data');
@@ -210,14 +232,16 @@ function getAllStructList() {
     db.transaction(function (trans) {
         trans.executeSql("SELECT * FROM struct_info ", [], function (ts, data) {
             if (data) {
+                console.log(data.rows.length);
                 if (data.rows.length > 0) {
-                    var row = '<div class="list-group">';
+
+                    var row = '<table class="table table-bordered">';
                     for (var i = 0; i < data.rows.length; i++) {
-                        console.log(data.rows[i]);
                         var info = data.rows[i];
-                        row += '<a target="_blank" class="list-group-item"  href="struct.html?name=' + info.name + '">' + info.id + '> ' + info.name + ' ' + info.desp + '</a> ';
+                        var btn = '<a id="btn" class="btn btn-danger btn-xs" href="javascript:void(0);" role="button" onclick="deleteStruct(' + info.id + ')">Delete &raquo;</a>';
+                        row += '<tr><td style="width: 70%"><a target="_blank"  href="struct.html?name={1}"> {0}> {1}  </a>{2}</td><td>{3}</td></tr>'.format(info.id, info.name, redMarkHtml(info.desp), btn);
                     }
-                    row += '</div>';
+                    row += '</table>';
                     $("#sp_struct").html(row);
                 } else {
                     alert('no data');
@@ -226,5 +250,62 @@ function getAllStructList() {
         }, function (ts, message) {
             alert(message);
         });
+    });
+}
+
+function getAllStructType(remove_base_type) {
+    var db = getCurrentDb();
+    db.transaction(function (trans) {
+        trans.executeSql("SELECT * FROM struct_info ", [], function (ts, data) {
+            var result = [];
+            if (!remove_base_type === true) {
+                result = deepCopy(g_all_base_type);
+            }
+            if (data) {
+                if (data.rows.length > 0) {
+                    for (var i = 0; i < data.rows.length; i++) {
+                        var info = data.rows[i];
+                        result.push(info.name);
+                    }
+                }
+            }
+            result.sort();
+            // init H5 autocomplete
+            var item = '';
+            result.forEach(function (val, index, arr) {
+                item += "<option value='{0}'>{0}</option>".format(val);
+            });
+            $("#type_data").html(item);
+        }, function (ts, message) {
+            alert(message);
+        });
+    });
+}
+
+function deleteApiById(id) {
+    var db = getCurrentDb();
+    db.transaction(function (trans) {
+        trans.executeSql("delete from api_info WHERE id=" + id,
+            [], function (ts, data) {
+                alert('Delete Success!');
+                getAllApiList();
+            }, function (ts, message) {
+                console.log(message);
+                alert(message);
+            });
+    });
+}
+
+function deleteStructById(id) {
+    var db = getCurrentDb();
+    db.transaction(function (trans) {
+        trans.executeSql("delete from struct_info WHERE id=" + id,
+            [], function (ts, data) {
+                alert('Delete Success!');
+                getAllStructList();
+            }, function (ts, message) {
+                console.log(message);
+                alert(message);
+            });
     });
 }

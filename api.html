@@ -4,70 +4,31 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <meta name="description" content="">
-    <meta name="author" content="">
 
     <title>Mia API Docs</title>
     <script src="js/jsonFormater.js" type="text/javascript"></script>
     <link href="css/jsonFormater.css" type="text/css" rel="stylesheet"/>
+    <link href="css/common.css" type="text/css" rel="stylesheet"/>
     <!-- Bootstrap core CSS -->
     <link href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
+    <!--copy text-->
+    <!--http://blog.csdn.net/penyoudi1/article/details/53419259-->
+    <!--https://clipboardjs.com/-->
+    <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
     <script src="js/vue.js"></script>
-
-    <style>
-        .red {
-            color: red;
-        }
-
-        li {
-            font-size: 14px;
-        }
-
-        blockquote {
-            display: block;
-            -webkit-margin-before: 1em;
-            -webkit-margin-after: 1em;
-            -webkit-margin-start: 40px;
-            -webkit-margin-end: 40px;
-        }
-
-        tr {
-            display: table-row;
-            vertical-align: inherit;
-            border-color: inherit;
-        }
-
-        table.wiki {
-            border: 1px solid #ccc;
-            border-collapse: collapse;
-            border-spacing: 0;
-            font-size: 14px;
-        }
-
-        table.wiki th {
-            border: 1px solid #bbb;
-            padding: .1em .25em;
-            background-color: #f7f7f7;
-        }
-
-        table.wiki td {
-            border: 1px solid #ccc;
-            padding: .1em .25em;
-        }
-    </style>
 </head>
 
 <body>
 <div class="container">
     <!-- Static navbar -->
+    <div id="saveTips" class="alert alert-danger tipsBar" role="alert">The content has been modified! Please <a
+            id="btnTipSave" href="javascript:void(0);" class="alert-link">save</a></div>
     <!-- Main component for a primary marketing message or call to action -->
     <div class="jumbotron" style="padding-top: 4px; margin-top: 20px;">
         <h2>Mia API Docs</h2>
@@ -90,7 +51,7 @@
         </p>
         <div id="input_params_keys">
             <form v-for="item in params" id="key_form_1" class="form-inline keyList" style="margin-top: 4px;">
-                name:<input id="name_1" type="text" class="form-control kk" placeholder="key"
+                name:<input id="name_1" type="text" class="form-control" placeholder="param name" style="width: 12%"
                             aria-describedby="basic-addon1"
                             :value="item.name" v-model="item.name">
                 &nbsp;required:
@@ -98,15 +59,16 @@
                        :checked="item.is_required.state"/>
 
 
-                &nbsp;type:<input id="type_1" type="text" class="form-control vv" placeholder="value"
+                &nbsp;type:<input id="type_1" type="text" class="form-control vv" placeholder="param type"
                                   style="width: 100px;"
                                   aria-describedby="basic-addon1"
-                                  :value="item.type" v-model="item.type">
+                                  :value="item.type" v-model="item.type" list="type_data">
                 &nbsp;is array:
                 <input type="checkbox" v-model="item.is_array.state" v-on:click="alocked(item.is_array.state)"
                        :checked="item.is_array.state"/>
 
-                &nbsp;desp:<input id="desp_1" type="text" class="form-control vv" placeholder="value"
+                &nbsp;desp:<input id="desp_1" type="text" class="form-control vv" placeholder="param desp"
+                                  style="width: 38%"
                                   aria-describedby="basic-addon1"
                                   :value="item.desp" v-model="item.desp">
                 <button :id="item.id" type="button" class="btn btn-sm btn-danger" v-on:click="removeKey(item.id)">
@@ -117,13 +79,13 @@
 
 
         <!--输出参数表单-->
-        <p>
+        <p style="margin-top: 5px;">
             output params:&nbsp;
             <button id="btn_output_addKey" type="button" class="btn btn-success btn-sm" value=""> add</button>
         </p>
         <div id="output_params_keys">
             <form v-for="item in params" id="key_form_2" class="form-inline keyList" style="margin-top: 4px;">
-                name:<input id="name_2" type="text" class="form-control kk" placeholder="key"
+                name:<input id="name_2" type="text" class="form-control kk" placeholder="param name" style="width: 12%"
                             aria-describedby="basic-addon1"
                             :value="item.name" v-model="item.name">
                 &nbsp;required:
@@ -131,15 +93,16 @@
                        v-on:click="alocked(item.is_required.state)" :checked="item.is_required.state"/>
 
 
-                &nbsp;type:<input id="type_2" type="text" class="form-control vv" placeholder="value"
+                &nbsp;type:<input id="type_2" type="text" class="form-control vv" placeholder="param type"
                                   style="width: 100px;"
                                   aria-describedby="basic-addon1"
-                                  :value="item.type" v-model="item.type">
+                                  :value="item.type" v-model="item.type" list="type_data">
                 &nbsp;is array:
                 <input type="checkbox" v-model="item.is_array.state" v-on:click="alocked(item.is_array.state)"
                        :checked="item.is_array.state"/>
 
-                &nbsp;desp:<input id="desp_2" type="text" class="form-control vv" placeholder="value"
+                &nbsp;desp:<input id="desp_2" type="text" class="form-control vv" placeholder="param desp"
+                                  style="width: 38%"
                                   aria-describedby="basic-addon1"
                                   :value="item.desp" v-model="item.desp">
                 <button :id="item.id" type="button" class="btn btn-sm btn-danger" v-on:click="removeKey(item.id)">
@@ -160,8 +123,8 @@
 
             <a id="btnGenWiki" style="margin-top: 10px;" class="btn btn-info" href="javascript:void(0);"
                role="button">Generate Wiki Code&raquo;</a>
-            <a id="btnGenMD" style="margin-top: 10px;" class="btn btn-info" href="javascript:void(0);"
-               role="button">Generate Markdown Code &raquo;</a>
+            <a id="btnGenPHP" style="margin-top: 10px;" class="btn btn-info" href="javascript:void(0);"
+               role="button">Generate PHP Code &raquo;</a>
             <a id="btnGenJsonResult" style="margin-top: 10px;" class="btn btn-warning" href="javascript:void(0);"
                role="button">API JsonResult &raquo;</a>
         </p>
@@ -248,14 +211,19 @@
         <!--result begin-->
         <div id="sp_code_div" class="panel panel-info" style="display: none">
             <div id=""></div>
-            <div id="sp_result_div_title1" class="panel-heading">Code Result</div>
+            <div id="sp_result_div_title1" class="panel-heading">Code Result &nbsp;&nbsp;
+                <button class="btncpy btn btn-info btn-sm" data-clipboard-action="copy"
+                        data-clipboard-target="#sp_code_result">Copy Code
+                </button>
+            </div>
             <div id="sp_code_result" class="panel-body" style="word-break: break-all;word-wrap: break-word;">
             </div>
         </div>
         <!--result end-->
     </div>
 
-
+    <datalist id="type_data">
+    </datalist>
 </div> <!-- /container -->
 
 <!-- Bootstrap core JavaScript
@@ -263,6 +231,8 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
 <script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<!--https://github.com/CodeSeven/toastr-->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="js/common.js"></script>
 <script src="js/db.js"></script>
 <script src="js/api.js"></script>

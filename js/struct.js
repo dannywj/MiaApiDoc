@@ -4,6 +4,8 @@
  */
 
 var tbl_preview;
+var last_struct_data = {};// 记录上一次修改的数据，用于和最新数据比较，控制tips弹层展示
+var is_new = false;
 // Init
 function initData() {
     var query_string = GetRequest();
@@ -12,7 +14,7 @@ function initData() {
     if (name) {
         getStructDataFromDB(name);
         $("#btnSave").html("Update Struct &raquo;");
-
+        is_new = false;
     } else {
         $("#btnPreview").show();
         struct_data = {
@@ -21,13 +23,33 @@ function initData() {
             params: []
         };
         bindForm();
+        is_new = true;
     }
+    // 延迟加载，数据比较
+    setTimeout('getLastData()', 2000);
+}
+
+function initPlugin() {
+    // clipboard
+    var clipboard = new Clipboard('.btncpy');
+    clipboard.on('success', function (e) {
+        toastr.options = {
+            "positionClass": "toast-top-center",
+            "timeOut": "2000"
+        };
+        toastr.info('Copy Success!');
+    });
+    clipboard.on('error', function (e) {
+        alert("复制失败！请手动复制")
+    });
 }
 
 // Main
 $(function () {//页面加载完成后绑定页面按钮的点击事件
     initDatabase();
     initData();
+    initPlugin();
+    getAllStructType();
 });
 
 function showPreviewTable() {
@@ -96,6 +118,13 @@ function showResult(data) {
     $("#sp_code_div").show();
     $("#sp_code_result").empty();
     $("#sp_code_result").html(data);
+    // toast
+    scrollToEnd();
+    toastr.options = {
+        "positionClass": "toast-top-center",
+        "timeOut": "2000"
+    };
+    toastr.success('Generate Success!');
 }
 
 function generateWikiCode(struct_data) {
@@ -104,14 +133,14 @@ function generateWikiCode(struct_data) {
     var tab = '&nbsp;&nbsp;&nbsp;&nbsp;';
     var title = tab + '||=字段 =||=必选/可选=||= 类型 =||=  说明 =||';
     if (struct_data) {
-        result += '* {0}({1})'.format(struct_data.struct_desp, struct_data.struct_name);
+        result += '* {0}({1})'.format(redMarkWiki(struct_data.struct_desp), struct_data.struct_name);
         result += line;
         result += title;
         result += line;
         if (struct_data.params && struct_data.params.length > 0) {
             struct_data.params.forEach(function (val, index, arr) {
                 var format_type = getFormatType(val.type, val.is_array.state);
-                result += tab + '||{0} ||{1} ||{2} ||{3} ||'.format(val.name, val.is_required.state ? '必选' : '可选', format_type, val.desp);
+                result += tab + '||{0} ||{1} ||{2} ||{3} ||'.format(val.name, val.is_required.state ? '必选' : '可选', format_type, redMarkWiki(val.desp));
                 result += line;
             })
         }
@@ -119,12 +148,29 @@ function generateWikiCode(struct_data) {
     return result;
 }
 
+// 保存原始数据，并设置定时检查
+function getLastData() {
+    last_struct_data = deepCopy(struct_data);
+    setInterval('checkUpdate()', 2000);
+}
+
+// 定时检查数据是否改变
+function checkUpdate() {
+    if (struct_data && last_struct_data) {
+        if (JSON.stringify(struct_data) === JSON.stringify(last_struct_data)) {
+            $("#saveTips").hide();
+        } else {
+            $("#saveTips").show();
+        }
+    }
+}
+
 // Buttons click
 $("#btn_addKey").click(function () {
     var timestamp = new Date().getTime();
     var new_obj = {
         id: timestamp,
-        name: '', type: '', desp: '',
+        name: '', type: 'string', desp: '',
         is_array: {
             state: false
         },
@@ -133,11 +179,18 @@ $("#btn_addKey").click(function () {
         }
     };
     struct_data.params.push(new_obj);
+    // 新增form后，由于vue.js会延迟生成新html，因此绑定Autocomplete控件也需要延迟执行才能生效。。
+    //setTimeout("initAutocomplete()",1000);
 });
 
-$("#btnSave").click(function () {
+$("#btnSave,#btnTipSave").click(function () {
     checkApiData(struct_data);
-    syncStructData(struct_data);
+    if (is_new) {
+        checkStructExists(struct_data);
+    } else {
+        syncStructData(struct_data);
+    }
+
 });
 
 $("#btnPreview").click(function () {

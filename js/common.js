@@ -7,7 +7,7 @@ var g_host_url = 'apitest.com';
 
 var g_all_base_type = ['int', 'string', 'boolean', 'float', 'double'];
 
-var g_all_struct_list=[];
+var g_all_struct_list = [];
 
 var g_base_type_example = {
     int: randomInt(1, 99999),
@@ -59,6 +59,26 @@ function GetRequest() {
 
 function deleteKeyInArray(array, item) {
     array.splice(jQuery.inArray(item, array), 1);
+}
+
+function deepCopy(json) {
+    if (typeof json == 'number' || typeof json == 'string' || typeof json == 'boolean') {
+        return json;
+    } else if (typeof json == 'object') {
+        if (json instanceof Array) {
+            var newArr = [], i, len = json.length;
+            for (i = 0; i < len; i++) {
+                newArr[i] = arguments.callee(json[i]);
+            }
+            return newArr;
+        } else {
+            var newObj = {};
+            for (var name in json) {
+                newObj[name] = arguments.callee(json[name]);
+            }
+            return newObj;
+        }
+    }
 }
 
 function randomInt(under, over) {
@@ -113,11 +133,16 @@ function isJson(str) {
 }
 
 function redMarkHtml(str) {
-    str= str.replace("[[","<span class='red'>");
-    return str.replace("]]","</span>");
+    str = str.replace("[[", "<span class='red'>");
+    return str.replace("]]", "</span>");
 }
 
 function redMarkWiki(str) {
-    str= str.replace("[[","[[span(style=color: #FF0000,");
-    return str.replace("]]",")]]");
+    str = str.replace("[[", "[[span(style=color: #FF0000,");
+    return str.replace("]]", ")]]");
+}
+
+function scrollToEnd(){
+    var h = $(document).height()-$(window).height();
+    $(document).scrollTop(h);
 }

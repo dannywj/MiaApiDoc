@@ -4,6 +4,7 @@
  */
 
 var tbl_preview;
+var last_api_data = {};// 记录上一次修改的数据，用于和最新数据比较，控制tips弹层展示
 // Init
 function initData() {
     var query_string = GetRequest();
@@ -24,12 +25,29 @@ function initData() {
         };
         bindForm();
     }
+    // 延迟加载，数据比较
+    setTimeout('getLastData()', 2000);
 }
 
+function initPlugin() {
+    var clipboard = new Clipboard('.btncpy');
+    clipboard.on('success', function (e) {
+        toastr.options = {
+            "positionClass": "toast-top-center",
+            "timeOut": "2000"
+        };
+        toastr.info('Copy Success!');
+    });
+    clipboard.on('error', function (e) {
+        alert("复制失败！请手动复制")
+    });
+}
 // Main
 $(function () {
     initDatabase();
     initData();
+    initPlugin();
+    getAllStructType();
 });
 
 // Form Operation
@@ -97,6 +115,13 @@ function showResult($json) {
         // output
         $("#sp_code_result").html($json);
     }
+    // toast
+    scrollToEnd();
+    toastr.options = {
+        "positionClass": "toast-top-center",
+        "timeOut": "2000"
+    };
+    toastr.success('Generate Success!');
 }
 
 // 检查api参数信息，移除name为空的参数
@@ -151,28 +176,75 @@ function generateWikiCode(api_data) {
         result += line + line;
         result += '* 请求参数';
         result += line;
-        result += title;
-        result += line;
+
         if (api_data.input_params && api_data.input_params.length > 0) {
+            result += title;
+            result += line;
             api_data.input_params.forEach(function (val, index, arr) {
                 var format_type = getFormatType(val.type, val.is_array.state);
                 result += tab + '||{0} ||{1} ||{2} ||{3} ||'.format(val.name, val.is_required.state ? '必选' : '可选', format_type, redMarkWiki(val.desp));
                 result += line;
             })
+        } else {
+            result += tab + '无';
+            result += line;
         }
         result += line;
         result += '* 返回结果';
         result += line;
-        result += title;
-        result += line;
+
         if (api_data.output_params && api_data.output_params.length > 0) {
+            result += title;
+            result += line;
             api_data.output_params.forEach(function (val, index, arr) {
                 var format_type = getFormatType(val.type, val.is_array.state);
                 result += tab + '||{0} ||{1} ||{2} ||{3} ||'.format(val.name, val.is_required.state ? '必选' : '可选', format_type, redMarkWiki(val.desp));
                 result += line;
             })
+        } else {
+            result += tab + '无';
+            result += line;
         }
     }
+    return result;
+}
+
+function generatePHPCode(api_data) {
+    var result = '';
+    var line = '<br/>';
+    var tab = '&nbsp;&nbsp;&nbsp;&nbsp;';
+    if (api_data) {
+        result += '/**' + line;
+        result += '* {0}'.format(api_data.api_name) + line;
+        result += '*/' + line;
+
+        result += 'public function {0} () {'.format(api_data.api_url.split('/')[1] ? api_data.api_url.split('/')[1] : api_data.api_url) + line;
+        result += tab + '$params = $this->input->post("params");' + line;
+        result += tab + '$arr_params = json_decode($params, true);' + line;
+
+        if (api_data.input_params && api_data.input_params.length > 0) {
+            result += line;
+            api_data.input_params.forEach(function (val, index, arr) {
+                result += tab + "${0} = isset($arr_params['{0}']) ? trim($arr_params['{0}']) : '';".format(val.name);
+                result += line;
+            })
+        }
+        result += line;
+
+        if (api_data.output_params && api_data.output_params.length > 0) {
+            result += tab + 'output_app_result(array(';
+            result += line;
+            api_data.output_params.forEach(function (val, index, arr) {
+                result += tab + tab + "'{0}' => null,".format(val.name);
+                result += line;
+            });
+            result += tab + ' ));';
+        } else {
+            result += tab + 'output_app_result();';
+        }
+    }
+    result += line;
+    result += '}';
     return result;
 }
 
@@ -206,13 +278,30 @@ function getSampleValue(type, is_array) {
     }
 }
 
+// 保存原始数据，并设置定时检查
+function getLastData() {
+    last_api_data = deepCopy(api_data);
+    setInterval('checkUpdate()', 2000);
+}
+
+// 定时检查数据是否改变
+function checkUpdate() {
+    if (api_data && last_api_data) {
+        if (JSON.stringify(api_data) === JSON.stringify(last_api_data)) {
+            $("#saveTips").hide();
+        } else {
+            $("#saveTips").show();
+        }
+    }
+}
+
 // Buttons click
 $("#btn_input_addKey").click(function () {
     var timestamp = new Date().getTime();
 
     var new_obj = {
         id: timestamp,
-        name: '', type: '', desp: '',
+        name: '', type: 'string', desp: '',
         is_array: {
             state: false
         },
@@ -227,7 +316,7 @@ $("#btn_output_addKey").click(function () {
     var timestamp = new Date().getTime();
     var new_obj = {
         id: timestamp,
-        name: '', type: '', desp: '',
+        name: '', type: 'string', desp: '',
         is_array: {
             state: false
         },
@@ -238,7 +327,7 @@ $("#btn_output_addKey").click(function () {
     api_data.output_params.push(new_obj);
 });
 
-$("#btnSave").click(function () {
+$("#btnSave,#btnTipSave").click(function () {
     if (api_data.api_url) {
         checkApiData(api_data);
         syncData(api_data);
@@ -253,6 +342,12 @@ $("#btnGenWiki").click(function () {
     var code = generateWikiCode(api_data);
     showResult(code);
 });
+
+$("#btnGenPHP").click(function () {
+    var code = generatePHPCode(api_data);
+    showResult(code);
+});
+
 
 $("#btnGenJsonResult").click(function () {
     var json_result = {
