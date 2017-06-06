@@ -3,19 +3,10 @@
  * Created by DannyWang
  */
 // Global & fonfig
-var g_host_url = 'apitest.com';
-
 var g_all_base_type = ['int', 'string', 'boolean', 'float', 'double'];
 
 var g_all_struct_list = [];
 
-var g_base_type_example = {
-    int: randomInt(1, 99999),
-    string: randomString(8),
-    boolean: true,
-    float: (Math.random() + 1).toFixed(2),
-    double: Math.random().toFixed(4)
-};
 // Tools
 String.prototype.format = function (args) {
     if (arguments.length > 0) {
@@ -118,7 +109,7 @@ function getFormatType(type, is_array) {
 }
 
 function generateTypeLink(type) {
-    var url = 'http://{0}/struct.html?name={1}'.format(g_host_url, type);
+    var url = 'struct.html?name={0}'.format(type);
     return "<a href='{0}' target='_blank'>{1}</a>".format(url, type);
 }
 
@@ -142,7 +133,18 @@ function redMarkWiki(str) {
     return str.replace("]]", ")]]");
 }
 
-function scrollToEnd(){
-    var h = $(document).height()-$(window).height();
+function scrollToEnd() {
+    var h = $(document).height() - $(window).height();
     $(document).scrollTop(h);
+}
+
+function getBaseTypeExample(type) {
+    var val = {
+        int: randomInt(1, 99999),
+        string: randomString(8),
+        boolean: true,
+        float: (Math.random() + 1).toFixed(2),
+        double: Math.random().toFixed(4)
+    };
+    return val[type];
 }

@@ -270,11 +270,11 @@ function getSampleValue(type, is_array) {
         // base
         if (is_array) {
             return [
-                g_base_type_example[type],
-                g_base_type_example[type]
+                getBaseTypeExample(type),
+                getBaseTypeExample(type)
             ]
         }
-        return g_base_type_example[type];
+        return getBaseTypeExample(type);
     }
 }
 

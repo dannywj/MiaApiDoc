@@ -5,10 +5,11 @@
 // DB
 function initDatabase() {
     var db = getCurrentDb();//初始化数据库
-    if (!db) {
-        alert("您的浏览器不支持HTML5本地数据库");
+    if (!db || !db.transaction) {
+        alert("您的浏览器不支持HTML5本地数据库,请使用Chrome浏览器");
         return;
     }
+
     db.transaction(function (trans) {//启动一个事务，并设置回调函数
         //执行创建表的Sql脚本
         var api_info = "CREATE TABLE IF NOT EXISTS api_info(id integer primary key autoincrement,name TEXT NULL,url TEXT NULL,desp TEXT NULL,input_params TEXT NULL,output_params TEXT NULL)";
@@ -35,6 +36,9 @@ function initDatabase() {
 function getCurrentDb() {
     //打开数据库，或者直接连接数据库参数：数据库名称，版本，概述，大小
     //如果数据库不存在那么创建之
+    if (typeof(openDatabase) == 'undefined') {
+        return false;
+    }
     var db = openDatabase("myDb", "1.0", "it's to save demo data!", 1024 * 1024);
     return db;
 }
@@ -218,11 +222,11 @@ function getAllApiList() {
                     row += '</table>';
                     $("#sp_result").html(row);
                 } else {
-                    alert('no data');
+                    console.log("no data");
                 }
             }
         }, function (ts, message) {
-            alert(message);
+            console.error(message);
         });
     });
 }
@@ -232,7 +236,6 @@ function getAllStructList() {
     db.transaction(function (trans) {
         trans.executeSql("SELECT * FROM struct_info ", [], function (ts, data) {
             if (data) {
-                console.log(data.rows.length);
                 if (data.rows.length > 0) {
 
                     var row = '<table class="table table-bordered">';
@@ -244,11 +247,11 @@ function getAllStructList() {
                     row += '</table>';
                     $("#sp_struct").html(row);
                 } else {
-                    alert('no data');
+                    console.log("no data");
                 }
             }
         }, function (ts, message) {
-            alert(message);
+            console.error(message);
         });
     });
 }
@@ -277,7 +280,7 @@ function getAllStructType(remove_base_type) {
             });
             $("#type_data").html(item);
         }, function (ts, message) {
-            alert(message);
+            console.error(message);
         });
     });
 }
