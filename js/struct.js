@@ -170,7 +170,7 @@ $("#btn_addKey").click(function () {
     var timestamp = new Date().getTime();
     var new_obj = {
         id: timestamp,
-        name: '', type: 'string', desp: '',
+        name: '', type: '', desp: '',
         is_array: {
             state: false
         },

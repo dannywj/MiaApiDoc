@@ -265,7 +265,11 @@ function getSampleValue(type, is_array) {
                 });
             }
         });
-        return result;
+        if (is_array) {
+            return [result];
+        }else{
+            return result;
+        }
     } else {
         // base
         if (is_array) {
@@ -301,7 +305,7 @@ $("#btn_input_addKey").click(function () {
 
     var new_obj = {
         id: timestamp,
-        name: '', type: 'string', desp: '',
+        name: '', type: '', desp: '',
         is_array: {
             state: false
         },
@@ -316,7 +320,7 @@ $("#btn_output_addKey").click(function () {
     var timestamp = new Date().getTime();
     var new_obj = {
         id: timestamp,
-        name: '', type: 'string', desp: '',
+        name: '', type: '', desp: '',
         is_array: {
             state: false
         },
@@ -370,14 +374,7 @@ $("#btnGenJsonResult").click(function () {
                         api_data.output_params.forEach(function (val, index, arr) {
                             var key = val.name;
                             var type = val.type;
-                            if (val.is_array.state) {
-                                //数组,取2个示例值
-                                var item = getSampleValue(type, val.is_array.state);
-                                json_result.content[key] = [item, item];
-                            } else {
-                                //单个,取1个示例值
-                                json_result.content[key] = getSampleValue(type, val.is_array.state);
-                            }
+                            json_result.content[key] = getSampleValue(type, val.is_array.state);
                         });
                         console.log(json_result);
                         showResult(JSON.stringify(json_result));
