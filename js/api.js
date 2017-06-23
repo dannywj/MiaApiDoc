@@ -5,6 +5,8 @@
 
 var tbl_preview;
 var last_api_data = {};// 记录上一次修改的数据，用于和最新数据比较，控制tips弹层展示
+var params_sorted_input_result = [];
+var params_sorted_output_result = [];
 // Init
 function initData() {
     var query_string = GetRequest();
@@ -386,5 +388,69 @@ $("#btnGenJsonResult").click(function () {
                     alert(message);
                 });
         });
+    }
+});
+
+//Sort Params
+
+$("#btn_sort_input").click(function () {
+    $("#sort_list_input").empty();
+    var raw_data = api_data.input_params;
+    raw_data.forEach(function (val, index, arr) {
+        var display_name = '{0}-{1}'.format(val.name, redMarkHtml(val.desp));
+        var json_data = "<div style='display: none'>" + JSON.stringify(val) + "</div>";
+        $("#sort_list_input").append("<li class='sort_li'><img style='cursor:move' src='images/dragbtn.png' width='30px' height='30px' />{0}{1}</li>".format(display_name, json_data));
+    });
+
+    var el = document.getElementById('sort_list_input');
+    var sortable = Sortable.create(el, {
+        onEnd: function () {
+            params_sorted_input_result = [];
+            $('#sort_list_input').find('li').each(function () {
+                var item = $(this).find('div').html();
+                params_sorted_input_result.push(JSON.parse(item));
+            });
+            console.log(params_sorted_input_result);
+        }
+    });
+});
+
+$("#btn_save_sort_input").click(function () {
+    if (params_sorted_input_result.length > 0) {
+        api_data.input_params = params_sorted_input_result;
+        checkApiData(api_data);
+        syncData(api_data);
+        setTimeout('window.location=window.location', 1000);
+    }
+});
+
+$("#btn_sort_output").click(function () {
+    $("#sort_list_output").empty();
+    var raw_data = api_data.output_params;
+    raw_data.forEach(function (val, index, arr) {
+        var display_name = '{0}-{1}'.format(val.name, redMarkHtml(val.desp));
+        var json_data = "<div style='display: none'>" + JSON.stringify(val) + "</div>";
+        $("#sort_list_output").append("<li class='sort_li'><img style='cursor:move' src='images/dragbtn.png' width='30px' height='30px' />{0}{1}</li>".format(display_name, json_data));
+    });
+
+    var el = document.getElementById('sort_list_output');
+    var sortable = Sortable.create(el, {
+        onEnd: function () {
+            params_sorted_output_result = [];
+            $('#sort_list_output').find('li').each(function () {
+                var item = $(this).find('div').html();
+                params_sorted_output_result.push(JSON.parse(item));
+            });
+            console.log(params_sorted_output_result);
+        }
+    });
+});
+
+$("#btn_save_sort_output").click(function () {
+    if (params_sorted_output_result.length > 0) {
+        api_data.output_params = params_sorted_output_result;
+        checkApiData(api_data);
+        syncData(api_data);
+        setTimeout('window.location=window.location', 1000);
     }
 });

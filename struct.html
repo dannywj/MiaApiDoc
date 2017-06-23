@@ -22,6 +22,7 @@
     <!--https://clipboardjs.com/-->
     <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
     <script src="js/vue.js"></script>
+    <script src="js/sortable.js"></script>
 </head>
 
 <body>
@@ -49,7 +50,9 @@
         <!--输入参数表单-->
         <p>
             params:&nbsp;
-            <button id="btn_addKey" type="button" class="btn btn-success btn-sm" value=""> add</button>
+            <button id="btn_addKey" type="button" class="btn btn-success btn-sm" value="">add</button>
+            &nbsp;&nbsp;
+            <button id="btn_sort" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">sort</button>
         </p>
         <div id="params_keys">
             <form v-for="item in params" id="key_form_1" class="form-inline keyList" style="margin-top: 4px;">
@@ -154,6 +157,27 @@
     </div>
     <datalist id="type_data">
     </datalist>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Sort the params</h4>
+                </div>
+                <div class="modal-body">
+                    <ul id="sort_list">
+
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button id="btn_save_sort" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div> <!-- /container -->
 

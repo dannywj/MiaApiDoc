@@ -6,6 +6,7 @@
 var tbl_preview;
 var last_struct_data = {};// 记录上一次修改的数据，用于和最新数据比较，控制tips弹层展示
 var is_new = false;
+var params_sorted_result = [];
 // Init
 function initData() {
     var query_string = GetRequest();
@@ -190,7 +191,6 @@ $("#btnSave,#btnTipSave").click(function () {
     } else {
         syncStructData(struct_data);
     }
-
 });
 
 $("#btnPreview").click(function () {
@@ -200,4 +200,39 @@ $("#btnPreview").click(function () {
 $("#btnGenWiki").click(function () {
     var code = generateWikiCode(struct_data);
     showResult(code);
+});
+
+$("#btn_sort").click(function () {
+    $("#sort_list").empty();
+    var raw_data = struct_data.params;
+    raw_data.forEach(function (val, index, arr) {
+        var display_name = '{0}-{1}'.format(val.name, redMarkHtml(val.desp));
+        var json_data = "<div style='display: none'>" + JSON.stringify(val) + "</div>";
+        $("#sort_list").append("<li class='sort_li'><img style='cursor:move' src='images/dragbtn.png' width='30px' height='30px' />{0}{1}</li>".format(display_name, json_data));
+    });
+
+    var el = document.getElementById('sort_list');
+    var sortable = Sortable.create(el, {
+        onEnd: function () {
+            params_sorted_result = [];
+            $('#sort_list').find('li').each(function () {
+                var item = $(this).find('div').html();
+                params_sorted_result.push(JSON.parse(item));
+            });
+            console.log(params_sorted_result);
+        }
+    });
+});
+
+$("#btn_save_sort").click(function () {
+    if (params_sorted_result.length > 0) {
+        struct_data.params = params_sorted_result;
+        checkApiData(struct_data);
+        if (is_new) {
+            checkStructExists(struct_data);
+        } else {
+            syncStructData(struct_data);
+        }
+        setTimeout('window.location=window.location', 1000);
+    }
 });

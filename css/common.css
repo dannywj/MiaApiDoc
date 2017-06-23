@@ -46,3 +46,6 @@ table.wiki td {
     z-index: 100;
     opacity: 0.85;
 }
+.sort_li{
+    list-style-type:none;
+}
