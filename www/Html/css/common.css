@@ -1,0 +1,51 @@
+.red {
+    color: red;
+}
+
+li {
+    font-size: 14px;
+}
+
+blockquote {
+    display: block;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 40px;
+    -webkit-margin-end: 40px;
+}
+
+tr {
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+}
+
+table.wiki {
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 14px;
+}
+
+table.wiki th {
+    border: 1px solid #bbb;
+    padding: .1em .25em;
+    background-color: #f7f7f7;
+}
+
+table.wiki td {
+    border: 1px solid #ccc;
+    padding: .1em .25em;
+}
+
+.tipsBar {
+    position: fixed;
+    right: 8%;
+    top: 5%;
+    display: none;
+    z-index: 100;
+    opacity: 0.85;
+}
+.sort_li{
+    list-style-type:none;
+}

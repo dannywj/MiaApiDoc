@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Mia Api Doc List</title>
+    <!-- Bootstrap core CSS -->
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/common.css" type="text/css" rel="stylesheet"/>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="container">
+    <!-- Static navbar -->
+    <!-- Main component for a primary marketing message or call to action -->
+    <div class="jumbotron" style="padding-top: 4px; margin-top: 20px;">
+        <h2>Mia API Doc List</h2>
+        <p>
+            <a id="btnNewApi" style="margin-top: 10px;" class="btn btn-info" href="api.html" target="_blank"
+               role="button">New Api &raquo;</a>
+            <a id="btnNewStruct" style="margin-top: 10px;" class="btn btn-info" href="struct.html" target="_blank"
+               role="button">New Struct &raquo;</a>
+        <div class="input-group" style="width: 30%">
+            <input id="txt_struct_name" type="text" class="form-control" placeholder="Struct name..." list="type_data">
+            <datalist id="type_data">
+            </datalist>
+            <span class="input-group-btn">
+            <button id="btn_search_struct" class="btn btn-default" type="button">Search!</button>
+            </span>
+        </div>
+
+        </p>
+
+        <div id="sp_result_div" class="panel panel-info">
+            <div id="tblData"></div>
+            <div id="sp_result_div_title" class="panel-heading">API List</div>
+            <div id="sp_result" class="panel-body" style="word-break: break-all;word-wrap: break-word;">
+
+            </div>
+        </div>
+
+        <div id="sp_struct_div" class="panel panel-success">
+            <div id="tblData1"></div>
+            <div id="sp_struct_div_title" class="panel-heading">Struct List</div>
+            <div id="sp_struct" class="panel-body" style="word-break: break-all;word-wrap: break-word;">
+            </div>
+        </div>
+    </div>
+</div> <!-- /container -->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/list.js"></script>
+</body>
+</html>
