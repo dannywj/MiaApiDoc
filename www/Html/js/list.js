@@ -4,16 +4,23 @@
  */
 function deleteApi(id) {
     if (confirm('Are you sure?')) {
-        deleteApiById(id);
+        ajaxGetJson('Docs/Api', 'deleteOne', {id: id}, function (re) {
+            alert('Delete Success!');
+            getAllApiList();
+        });
     }
 }
 function deleteStruct(id) {
     if (confirm('Are you sure?')) {
-        deleteStructById(id);
+        ajaxGetJson('Docs/Struct', 'deleteOne', {id: id}, function (re) {
+            alert('Delete Success!');
+            getAllStructList();
+        });
     }
 }
 
 function getAllApiList() {
+    loadingDiv('#sp_result');
     ajaxGetJson('Docs/Api', 'getAllList', {}, function (re) {
         var data = re;
         var row = '<table class="table table-bordered">';
@@ -28,6 +35,7 @@ function getAllApiList() {
 }
 
 function getAllStructList() {
+    loadingDiv('#sp_struct');
     ajaxGetJson('Docs/Struct', 'getAllList', {}, function (re) {
         var data = re;
         var row = '<table class="table table-bordered">';

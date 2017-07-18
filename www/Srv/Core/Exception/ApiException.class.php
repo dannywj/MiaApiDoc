@@ -7,6 +7,6 @@
 namespace ApiDocs\Core\Exception;
 class ApiException extends \Exception {
     public function __construct($message = "", $status = "") {
-        parent::__construct($message, 301);
+        parent::__construct($message, 101);
     }
 }

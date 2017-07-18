@@ -34,7 +34,7 @@ class Mysql extends \mysqli {
     }
 
     public function GetOne($sql) {
-        $lists = $this->ypSelect($sql);
+        $lists = $this->Select($sql);
         return isset($lists[0]) ? $lists[0] : null;
     }
 

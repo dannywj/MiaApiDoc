@@ -26,8 +26,49 @@ function initData() {
         bindForm();
         is_new = true;
     }
-    // 延迟加载，数据比较
-    setTimeout('getLastData()', 2000);
+}
+
+function getStructDataFromDB(name) {
+    loadingPage();
+    ajaxGetJson('Docs/Struct', 'getOneByName', {name: name}, function (re) {
+        var db_data = re;
+        struct_data = {
+            id: db_data.id,
+            struct_name: db_data.name,
+
+            struct_desp: db_data.desp,
+            params: JSON.parse(db_data.params)
+        };
+        bindForm();
+        showPreviewTable();
+        getLastData();
+        loadingPage(true);
+    }, function () {
+        alert('Invalid struct name');
+        window.location = "struct.html";
+    });
+}
+
+function getAllStructType() {
+    ajaxGetJson('Docs/Struct', 'getAllList', {}, function (re) {
+        var data = re;
+        // get struct type
+        var result = [];
+        if (data) {
+            if (data.length > 0) {
+                for (var i = 0; i < data.length; i++) {
+                    var info = data[i];
+                    result.push(info.name);
+                }
+            }
+        }
+        result.sort();
+        var item = '';
+        result.forEach(function (val, index, arr) {
+            item += "<option value='{0}'>{0}</option>".format(val);
+        });
+        $("#type_data").html(item);
+    });
 }
 
 function initPlugin() {
@@ -47,7 +88,6 @@ function initPlugin() {
 
 // Main
 $(function () {//页面加载完成后绑定页面按钮的点击事件
-    initDatabase();
     initData();
     initPlugin();
     getAllStructType();
@@ -166,6 +206,36 @@ function checkUpdate() {
     }
 }
 
+// Data
+function checkStructExists() {
+    ajaxGetJson('Docs/Struct', 'checkExists', {name: struct_data.struct_name}, function (re) {
+        if (re === true) {
+            alert('Add failure! The struct:[{0}] already exists.'.format(struct_data.struct_name));
+        } else {
+            insertStructData(struct_data);
+        }
+    });
+}
+
+function insertStructData(struct_data) {
+    loadingPage();
+    ajaxPostJson('Docs/Struct', 'addOne', {struct_data: JSON.stringify(struct_data)}, function (re) {
+        loadingPage(true);
+        alert('Add Success!');
+        window.location = 'struct.html?name={0}'.format(struct_data.struct_name);
+    });
+}
+
+function updateStructData(struct_data) {
+    loadingPage();
+    ajaxPostJson('Docs/Struct', 'updateOne', {struct_data: JSON.stringify(struct_data)}, function (re) {
+        loadingPage(true);
+        alert('Update Success!');
+        last_struct_data = deepCopy(struct_data);
+        window.location = window.location;
+    });
+}
+
 // Buttons click
 $("#btn_addKey").click(function () {
     var timestamp = new Date().getTime();
@@ -189,7 +259,7 @@ $("#btnSave,#btnTipSave").click(function () {
     if (is_new) {
         checkStructExists(struct_data);
     } else {
-        syncStructData(struct_data);
+        updateStructData(struct_data);
     }
 });
 
@@ -226,13 +296,9 @@ $("#btn_sort").click(function () {
 
 $("#btn_save_sort").click(function () {
     if (params_sorted_result.length > 0) {
+        $(".sp_sort_tips").html('updating');
         struct_data.params = params_sorted_result;
         checkApiData(struct_data);
-        if (is_new) {
-            checkStructExists(struct_data);
-        } else {
-            syncStructData(struct_data);
-        }
-        setTimeout('window.location=window.location', 1000);
+        updateStructData(struct_data);
     }
 });

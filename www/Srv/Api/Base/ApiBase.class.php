@@ -5,16 +5,39 @@
  * jue.wang@yulore.com
  * 2015/8/27
  */
+
 namespace ApiDocs\Api\Base;
+
+use ApiDocs\Core\Exception\ApiException;
+
 class ApiBase {
     /**
-     * 获取黄页数据库连接
+     * 获取数据库连接
      * @return mixed
      */
     public function getDbApiDocs() {
         return \ApiDocs\Core\Db::get('ApiDocs');
     }
 
+    /**
+     * 参数验证&获取
+     * @param $key
+     * @param null $default_value
+     * @return null|string
+     * @throws ApiException
+     */
+    public function checkParam($key, $default_value = null) {
+        $result = isset($_REQUEST[$key]) ? trim($_REQUEST[$key]) : "";
+        if (empty($result)) {
+            if ($default_value === null) {
+                throw new ApiException("Invalid arguments:{$key}.");
+            } else {
+                return $default_value;
+            }
+        } else {
+            return $result;
+        }
+    }
 
     /**
      * API成功返回

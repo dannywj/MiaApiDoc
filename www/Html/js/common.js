@@ -7,7 +7,7 @@ var g_all_base_type = ['int', 'string', 'boolean', 'float', 'double'];
 
 var g_all_struct_list = [];
 
-var g_controller_base='../Srv/index.php';
+var g_controller_base = '../Srv/index.php';
 // Tools
 String.prototype.format = function (args) {
     if (arguments.length > 0) {
@@ -150,16 +150,57 @@ function getBaseTypeExample(type) {
     return val[type];
 }
 
-function ajaxGetJson(s, f, params, callback) {
+function ajaxGetJson(s, f, params, callback, error_callback) {
     params.s = s;
     params.f = f;
-    //TODO:loading
     $.getJSON(g_controller_base, params, function (data) {
         if (data.status === 0) {
             callback(data.data);
         } else {
-            console.error(data);
-            alert("get api[{0}] error!".format(s+f));
+            if (error_callback) {
+                error_callback();
+            } else {
+                console.error(data);
+                alert("get api[{0}] error!".format(s + f));
+            }
         }
     });
+}
+
+function ajaxPostJson(s, f, params, callback, error_callback, page_loading) {
+    if (page_loading) {
+        loadingPage();
+    }
+    $.post(g_controller_base + "?s={0}&f={1}".format(s, f), params, function (data) {
+        if (page_loading) {
+            loadingPage(true);
+        }
+        if (data.status === 0) {
+            callback(data.data);
+        } else {
+            if (error_callback) {
+                error_callback();
+            } else {
+                console.error(data);
+                alert("post api[{0}] error!".format(s + f));
+            }
+        }
+    });
+}
+
+function loadingDiv(divSelecter) {
+    $(divSelecter).html("<img src='images/loading.gif' style='margin: 0 auto;display: block;'/>");
+}
+
+function loadingPage(is_hide) {
+    var loading_html = '<section class="loading_shade" id="J_loading_box"> <div class="loading_box"> <div class="loading"></div> <p class="loading_text">Loading...</p> </div> </section>';
+    if (is_hide) {
+        $(".loading_shade").hide();
+    } else {
+        $("body").append(loading_html);
+    }
+}
+
+function log(info) {
+    console.log(info);
 }

@@ -27,8 +27,48 @@ function initData() {
         };
         bindForm();
     }
-    // 延迟加载，数据比较
-    setTimeout('getLastData()', 2000);
+}
+
+function getDataFromDB(id) {
+    loadingPage();
+    ajaxGetJson('Docs/Api', 'getOne', {id: id}, function (re) {
+        api_data = {
+            id: re.id,
+            api_name: re.name,
+            api_url: re.url,
+            api_desp: re.desp,
+            input_params: JSON.parse(re.input_params),
+            output_params: JSON.parse(re.output_params)
+        };
+        bindForm();
+        showPreviewTable();
+        getLastData();
+        loadingPage(true);
+    }, function () {
+        alert('Invalid id');
+    });
+}
+
+function getAllStructType() {
+    ajaxGetJson('Docs/Struct', 'getAllList', {}, function (re) {
+        var data = re;
+        // get struct type
+        var result = [];
+        if (data) {
+            if (data.length > 0) {
+                for (var i = 0; i < data.length; i++) {
+                    var info = data[i];
+                    result.push(info.name);
+                }
+            }
+        }
+        result.sort();
+        var item = '';
+        result.forEach(function (val, index, arr) {
+            item += "<option value='{0}'>{0}</option>".format(val);
+        });
+        $("#type_data").html(item);
+    });
 }
 
 function initPlugin() {
@@ -44,9 +84,9 @@ function initPlugin() {
         alert("复制失败！请手动复制")
     });
 }
+
 // Main
 $(function () {
-    initDatabase();
     initData();
     initPlugin();
     getAllStructType();
@@ -269,7 +309,7 @@ function getSampleValue(type, is_array) {
         });
         if (is_array) {
             return [result];
-        }else{
+        } else {
             return result;
         }
     } else {
@@ -299,6 +339,32 @@ function checkUpdate() {
             $("#saveTips").show();
         }
     }
+}
+
+// Data
+function checkApiExists() {
+    ajaxGetJson('Docs/Api', 'checkExists', {id: api_data.id ? api_data.id : -1}, function (re) {
+        if (re === true) {
+            updateApiData(api_data);
+        } else {
+            insertApiData(api_data);
+        }
+    }, null, true);
+}
+
+function insertApiData(api_data) {
+    ajaxPostJson('Docs/Api', 'addOne', {api_data: JSON.stringify(api_data)}, function (re) {
+        alert('Add Success!');
+        window.location = 'api.html?id={0}'.format(re);
+    }, null, true);
+}
+
+function updateApiData(api_data) {
+    ajaxPostJson('Docs/Api', 'updateOne', {api_data: JSON.stringify(api_data)}, function (re) {
+        alert('Update Success!');
+        last_api_data = deepCopy(api_data);
+        window.location = window.location;
+    }, null, true);
 }
 
 // Buttons click
@@ -336,7 +402,7 @@ $("#btn_output_addKey").click(function () {
 $("#btnSave,#btnTipSave").click(function () {
     if (api_data.api_url) {
         checkApiData(api_data);
-        syncData(api_data);
+        checkApiExists(api_data);
     }
 });
 
@@ -354,7 +420,6 @@ $("#btnGenPHP").click(function () {
     showResult(code);
 });
 
-
 $("#btnGenJsonResult").click(function () {
     var json_result = {
         code: 200,
@@ -364,35 +429,27 @@ $("#btnGenJsonResult").click(function () {
     };
     if (api_data.output_params.length > 0) {
         // 异步获取所有结构体
-        var db = getCurrentDb();
-        db.transaction(function (trans) {
-            trans.executeSql("SELECT * FROM struct_info",
-                [], function (ts, data) {
-                    if (data && data.rows.length > 0) {
-                        for (var i = 0; i < data.rows.length; i++) {
-                            g_all_struct_list.push(data.rows[i]);
-                        }
-                        // 获取结构体数据完成
-                        api_data.output_params.forEach(function (val, index, arr) {
-                            var key = val.name;
-                            var type = val.type;
-                            json_result.content[key] = getSampleValue(type, val.is_array.state);
-                        });
-                        console.log(json_result);
-                        showResult(JSON.stringify(json_result));
-                    } else {
-                        console.log('not find struct_info');
-                    }
-                }, function (ts, message) {
-                    console.log(message);
-                    alert(message);
+        ajaxGetJson('Docs/Struct', 'getAllList', {}, function (re) {
+            if (re && re.length > 0) {
+                for (var i = 0; i < re.length; i++) {
+                    g_all_struct_list.push(re[i]);
+                }
+                // 获取结构体数据完成
+                api_data.output_params.forEach(function (val, index, arr) {
+                    var key = val.name;
+                    var type = val.type;
+                    json_result.content[key] = getSampleValue(type, val.is_array.state);
                 });
+                log(json_result);
+                showResult(JSON.stringify(json_result));
+            } else {
+                log('not find struct_info');
+            }
         });
     }
 });
 
 //Sort Params
-
 $("#btn_sort_input").click(function () {
     $("#sort_list_input").empty();
     var raw_data = api_data.input_params;
@@ -417,10 +474,10 @@ $("#btn_sort_input").click(function () {
 
 $("#btn_save_sort_input").click(function () {
     if (params_sorted_input_result.length > 0) {
+        $(".sp_sort_tips").html('updating');
         api_data.input_params = params_sorted_input_result;
         checkApiData(api_data);
-        syncData(api_data);
-        setTimeout('window.location=window.location', 1000);
+        updateApiData(api_data);
     }
 });
 
@@ -448,9 +505,9 @@ $("#btn_sort_output").click(function () {
 
 $("#btn_save_sort_output").click(function () {
     if (params_sorted_output_result.length > 0) {
+        $(".sp_sort_tips").html('updating');
         api_data.output_params = params_sorted_output_result;
         checkApiData(api_data);
-        syncData(api_data);
-        setTimeout('window.location=window.location', 1000);
+        updateApiData(api_data);
     }
 });
