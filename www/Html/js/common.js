@@ -36,6 +36,18 @@ String.prototype.format = function (args) {
     }
 };
 
+String.prototype.replaceAll = function (s1, s2) {
+    return this.replace(new RegExp(s1, "gm"), s2);
+};
+
+String.prototype.Trim = function () {
+    return this.replace(/(^\s*)|(\s*$)/g, "");
+};
+
+String.prototype.TrimStr = function (str) {
+    return this.replace(new RegExp('^\\' + str + '+|\\' + str + '+$', 'g'), '');
+};
+
 function GetRequest() {
     var url = location.search; //获取url中"?"符后的字串
     var theRequest = new Object();
@@ -150,15 +162,21 @@ function getBaseTypeExample(type) {
     return val[type];
 }
 
-function ajaxGetJson(s, f, params, callback, error_callback) {
+function ajaxGetJson(s, f, params, callback, error_callback, page_loading) {
+    if (page_loading) {
+        loadingPage();
+    }
     params.s = s;
     params.f = f;
     $.getJSON(g_controller_base, params, function (data) {
+        if (page_loading) {
+            loadingPage(true);
+        }
         if (data.status === 0) {
             callback(data.data);
         } else {
             if (error_callback) {
-                error_callback();
+                error_callback(data);
             } else {
                 console.error(data);
                 alert("get api[{0}] error!".format(s + f));
@@ -179,7 +197,7 @@ function ajaxPostJson(s, f, params, callback, error_callback, page_loading) {
             callback(data.data);
         } else {
             if (error_callback) {
-                error_callback();
+                error_callback(data);
             } else {
                 console.error(data);
                 alert("post api[{0}] error!".format(s + f));

@@ -356,7 +356,9 @@ function insertApiData(api_data) {
     ajaxPostJson('Docs/Api', 'addOne', {api_data: JSON.stringify(api_data)}, function (re) {
         alert('Add Success!');
         window.location = 'api.html?id={0}'.format(re);
-    }, null, true);
+    }, function (err_data) {
+        alert("Add Error! " + err_data.msg);
+    }, true);
 }
 
 function updateApiData(api_data) {
@@ -364,7 +366,9 @@ function updateApiData(api_data) {
         alert('Update Success!');
         last_api_data = deepCopy(api_data);
         window.location = window.location;
-    }, null, true);
+    }, function (err_data) {
+        alert("Update Error! " + err_data.msg);
+    }, true);
 }
 
 // Buttons click

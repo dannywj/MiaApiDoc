@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Mia Api Doc Detail</title>
+    <!-- Bootstrap core CSS -->
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/common.css" type="text/css" rel="stylesheet"/>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+
+    <![endif]-->
+</head>
+
+<body>
+<div class="container">
+    <!-- Static navbar -->
+    <!-- Main component for a primary marketing message or call to action -->
+    <div class="jumbotron" style="padding-top: 4px; margin-top: 20px;">
+        <h2>Mia API Doc Detail</h2>
+
+        <div id="sp_all_div" class="panel panel-success">
+            <div id="tblData2"></div>
+            <div id="sp_all_div_title" class="panel-heading">API Detail</div>
+            <div id="sp_all" class="panel-body" style="word-break: break-all;word-wrap: break-word;">
+                <h3>API detail list:</h3>
+                <ul id="ul_apilist">
+                </ul>
+                <p style="height: 50px;"></p>
+                <h3>API detail info:</h3>
+                <!--API预览-->
+                <div id="tbl_preview">
+                    <div v-for="api_data in api_data_list">
+                        <h4 :id="api_data.key" style="padding-top: 6px;">{{api_data.api_name}}</h4>
+                        <ul>
+                            <li>URL
+                            </li>
+                        </ul>
+                        <blockquote>
+                            <p style="font-size: 14px;">
+                                {{api_data.api_url}}
+                            </p>
+                        </blockquote>
+                        <ul>
+                            <li>请求参数
+                            </li>
+                        </ul>
+                        <blockquote>
+                            <template v-if="api_data.show_input">
+                                <table class="wiki">
+                                    <tbody>
+                                    <tr>
+                                        <th style="text-align: left">字段</th>
+                                        <th>必选/可选</th>
+                                        <th> 类型</th>
+                                        <th style="text-align: center"> 说明
+                                        </th>
+                                    </tr>
+                                    <tr v-for="item in api_data.input_params">
+                                        <td style="text-align: left">{{item.name}}</td>
+                                        <td style="text-align: center"> {{item.is_required.state? '必选' : '可选'}}</td>
+                                        <td>
+                                            <span v-html="format_type(item.type,item.is_array.state)"></span>
+                                        </td>
+                                        <td>
+                                            <span v-html="mark_desp(item.desp)"></span>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                            </template>
+                            <template v-else>
+                                无
+                            </template>
+                        </blockquote>
+                        <ul>
+                            <li>返回结果
+                            </li>
+                        </ul>
+                        <blockquote>
+                            <template v-if="api_data.show_output">
+                                <table class="wiki">
+                                    <tbody>
+                                    <tr>
+                                        <th style="text-align: left">字段</th>
+                                        <th>必选/可选</th>
+                                        <th> 类型</th>
+                                        <th style="text-align: center"> 说明
+                                        </th>
+                                    </tr>
+                                    <tr v-for="item in api_data.output_params">
+                                        <td style="text-align: left">{{item.name}}</td>
+                                        <td style="text-align: center">{{item.is_required.state? '必选' : '可选'}}</td>
+                                        <td style="text-align: left">
+                                            <span v-html="format_type(item.type,item.is_array.state)"></span>
+                                        </td>
+                                        <td>
+                                            <span v-html="mark_desp(item.desp)"></span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </template>
+                            <template v-else>
+                                无
+                            </template>
+                        </blockquote>
+                    </div>
+                </div>
+                <!--API预览end-->
+                <!--Struct预览-->
+                <h3>Struct List:</h3>
+                <div id="struct_preview">
+                    <div v-for="struct_data in struct_data_list">
+                        <ul :id="struct_data.struct_key">
+                            <li><span v-html="mark_desp(struct_data.struct_desp)"></span> ({{struct_data.struct_name}})
+                            </li>
+                        </ul>
+                        <blockquote>
+                            <table class="wiki">
+                                <tbody>
+                                <tr>
+                                    <th style="text-align: left">字段</th>
+                                    <th>必选/可选</th>
+                                    <th> 类型</th>
+                                    <th style="text-align: center"> 说明
+                                    </th>
+                                </tr>
+                                <tr v-for="item in struct_data.params">
+                                    <td style="text-align: left">{{item.name}}</td>
+                                    <td style="text-align: center"> {{item.is_required.state? '必选' : '可选'}}</td>
+                                    <td>
+                                        <span v-html="format_type(item.type,item.is_array.state)"></span>
+                                    </td>
+                                    <td>
+                                        <span v-html="mark_desp(item.desp)"></span>
+                                    </td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </blockquote>
+
+                    </div>
+                </div>
+                <!--Struct预览end-->
+
+            </div>
+        </div>
+    </div>
+</div> <!-- /container -->
+
+<a class="gotoTopLink" href="javascript:scroll(0,0)"></a>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="js/vue.js"></script>
+<script src="js/common.js"></script>
+<script src="js/detail.js"></script>
+</body>
+</html>

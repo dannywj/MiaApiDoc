@@ -46,8 +46,9 @@ table.wiki td {
     z-index: 100;
     opacity: 0.85;
 }
-.sort_li{
-    list-style-type:none;
+
+.sort_li {
+    list-style-type: none;
 }
 
 /*loading begin*/
@@ -60,7 +61,7 @@ table.wiki td {
     display: -webkit-box;
     -webkit-box-pack: center;
     -webkit-box-align: center;
-    background: rgba(255,255,255,.7);
+    background: rgba(255, 255, 255, .7);
     z-index: 99
 }
 
@@ -115,4 +116,14 @@ table.wiki td {
     color: #FFF;
     text-align: center
 }
+
 /*loading end*/
+.gotoTopLink {
+    position: fixed;
+    left: 95%;
+    bottom: 5%;
+    display: block;
+    height: 48px;
+    width: 48px;
+    background: url("../images/r_top.png");
+}
