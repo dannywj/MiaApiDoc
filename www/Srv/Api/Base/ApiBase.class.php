@@ -8,13 +8,61 @@
 
 namespace ApiDocs\Api\Base;
 
+use ApiDocs\Api\User\Auth;
 use ApiDocs\Core\Exception\ApiException;
 
 class ApiBase {
-    /**
-     * 获取数据库连接
-     * @return mixed
-     */
+    private $_auth_id;
+    protected $is_login = false;
+    protected $user_info;
+
+    public function __construct($check_auth = true) {
+        if ($check_auth) {
+            //check apikey ,auth_id
+            if (empty($_COOKIE['auth_id'])) {
+                $this->is_login = false;
+                return false;
+            }
+            $this->_auth_id = $_COOKIE['auth_id'];
+            //check account
+            $this->user_info = $this->getUserInfoByAuth($this->_auth_id);
+            if (empty($this->user_info)) {
+                $this->is_login = false;
+            } else {
+                $this->is_login = true;
+            }
+        }
+    }
+
+    private function getUserInfoByAuth($auth_id) {
+        $now = date('Y-m-d H:i:s');
+        $sql = "SELECT * FROM user_info u INNER JOIN user_auth a
+              on u.id=a.user_id
+              where a.auth_id='{$auth_id}' and a.expire_time>'{$now}';";
+        $db = $this->getDbApiDocs();
+        $result = $db->GetOne($sql);
+        if (!empty($result)) {
+            return $result;
+        } else {
+            return null;
+        }
+    }
+
+    public function checkLogin($role = null) {
+        if (!$this->is_login) {
+            $this->error(201);
+        }
+        if (!empty($role)) {
+            // check role
+            if ($role == 'admin' && $this->user_info['type'] == 1) {
+                //ok
+            } else {
+                $this->error(203);
+            }
+        }
+
+    }
+
     public function getDbApiDocs() {
         return \ApiDocs\Core\Db::get('ApiDocs');
     }

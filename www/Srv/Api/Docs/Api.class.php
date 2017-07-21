@@ -28,6 +28,7 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
     }
 
     public function deleteOne() {
+        $this->checkLogin('admin');
         $id = $this->checkParam('id');
         $sql = "DELETE FROM api_info where id={$id}";
         $db = parent::getDbApiDocs();
@@ -52,6 +53,7 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
     }
 
     public function addOne() {
+        $this->checkLogin();
         $api_data = $this->checkParam('api_data');
         $arr_api_data = json_decode($api_data, true);
         $arr_api_data['api_url'] = trim($arr_api_data['api_url']);
@@ -62,6 +64,8 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
             'desp' => $arr_api_data['api_desp'],
             'input_params' => json_encode($arr_api_data['input_params']),
             'output_params' => json_encode($arr_api_data['output_params']),
+            'create_user' => $this->user_info['username'],
+            'add_time' => date('Y-m-d H:i:s'),
         );
         $db = parent::getDbApiDocs();
         // check url
@@ -82,6 +86,7 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
     }
 
     public function updateOne() {
+        $this->checkLogin();
         $api_data = $this->checkParam('api_data');
         $arr_api_data = json_decode($api_data, true);
         $id = $arr_api_data['id'];
@@ -94,7 +99,11 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
         $url = trim($url);
         $url = trim($url, '/');
 
-        $sql = "update api_info set name='{$name}',url='{$url}',desp='{$desp}',input_params='{$input_params}',output_params='{$output_params}'  where id={$id}";
+        $last_modify_user = $this->user_info['username'];
+        $update_time = date('Y-m-d H:i:s');
+
+        $sql = "update api_info set name='{$name}',url='{$url}',desp='{$desp}',input_params='{$input_params}',output_params='{$output_params}',
+                last_modify_user='{$last_modify_user}',update_time='{$update_time}' where id={$id}";
         $db = parent::getDbApiDocs();
 
         $result = $db->query($sql);

@@ -28,6 +28,7 @@ class Struct extends \ApiDocs\Api\Base\ApiBase {
     }
 
     public function deleteOne() {
+        $this->checkLogin('admin');
         $id = $this->checkParam('id');
         $sql = "DELETE FROM struct_info where id={$id}";
         $db = parent::getDbApiDocs();
@@ -52,12 +53,15 @@ class Struct extends \ApiDocs\Api\Base\ApiBase {
     }
 
     public function addOne() {
+        $this->checkLogin();
         $struct_data = $this->checkParam('struct_data');
         $arr_struct_data = json_decode($struct_data, true);
         $info = array(
             'name' => $arr_struct_data['struct_name'],
             'desp' => $arr_struct_data['struct_desp'],
             'params' => json_encode($arr_struct_data['params']),
+            'create_user' => $this->user_info['username'],
+            'add_time' => date('Y-m-d H:i:s'),
         );
         $db = parent::getDbApiDocs();
         $id = $db->Insert($info, 'struct_info');
@@ -66,10 +70,10 @@ class Struct extends \ApiDocs\Api\Base\ApiBase {
         } else {
             $this->error(103);
         }
-
     }
 
     public function updateOne() {
+        $this->checkLogin();
         $struct_data = $this->checkParam('struct_data');
         $arr_struct_data = json_decode($struct_data, true);
         $id = $arr_struct_data['id'];
@@ -77,7 +81,12 @@ class Struct extends \ApiDocs\Api\Base\ApiBase {
         $desp = $arr_struct_data['struct_desp'];
         $params = json_encode($arr_struct_data['params']);
 
-        $sql = "update struct_info set name='{$name}',desp='{$desp}',params='{$params}' where id={$id}";
+        $last_modify_user = $this->user_info['username'];
+        $update_time = date('Y-m-d H:i:s');
+
+        $sql = "update struct_info set name='{$name}',desp='{$desp}',params='{$params}',
+                last_modify_user='{$last_modify_user}',update_time='{$update_time}'
+                where id={$id}";
         $db = parent::getDbApiDocs();
         $result = $db->query($sql);
         if ($db->affected_rows === 1) {

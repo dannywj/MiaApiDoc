@@ -223,7 +223,14 @@ function insertStructData(struct_data) {
         loadingPage(true);
         alert('Add Success!');
         window.location = 'struct.html?name={0}'.format(struct_data.struct_name);
-    });
+    }, function (err_data) {
+        if(err_data.status==201){
+            alert("Invalid user identity，please login");
+            window.location='login.html';
+        }else {
+            alert("Add Error! " + err_data.msg);
+        }
+    },true);
 }
 
 function updateStructData(struct_data) {
@@ -233,7 +240,14 @@ function updateStructData(struct_data) {
         alert('Update Success!');
         last_struct_data = deepCopy(struct_data);
         window.location = window.location;
-    });
+    }, function (err_data) {
+        if(err_data.status==201){
+            alert("Invalid user identity，please login");
+            window.location='login.html';
+        }else {
+            alert("Update Error! " + err_data.msg);
+        }
+    },true);
 }
 
 // Buttons click

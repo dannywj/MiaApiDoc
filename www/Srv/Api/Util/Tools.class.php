@@ -140,47 +140,6 @@ class Tools {
     }
 
     /**
-     * 旧版黄页接口签名方法验证
-     * @param $str 加密前拼接参数
-     * @param $sig 生成的签名
-     * @param $st 起始位数
-     * @param $l 长度
-     * @param $alg 加密方式 sha1
-     */
-    public static function checkSignature($str, $sig, $st, $l, $alg) {
-        if ($alg == 'sha1') {
-            $svrsig = substr(sha1($str), $st, $l);
-        } else {
-            $svrsig = '';
-        }
-        if ($sig != $svrsig) {
-            if (isset($_GET['debug'])) {
-                echo "sign is:[$svrsig]";
-            }
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * 旧版黄页获取签名方法
-     * @param $str 加密前拼接参数
-     * @param $st 起始位数
-     * @param $l 长度
-     * @param $alg 加密方式 sha1
-     * @return string 生成的签名
-     */
-    public static function getSignature($str, $st, $l, $alg) {
-        if ($alg == 'sha1') {
-            $svrsig = substr(sha1($str), $st, $l);
-        } else {
-            $svrsig = '';
-        }
-        return $svrsig;
-    }
-
-    /**
      * 检查提交参数是否为空
      * @param $param
      * @return bool

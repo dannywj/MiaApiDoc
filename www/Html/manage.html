@@ -5,7 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Mia Api Doc List</title>
+    <title>Mia Api Doc Manage</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
     <!-- Bootstrap core CSS -->
     <link href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/common.css" type="text/css" rel="stylesheet"/>
@@ -18,22 +19,33 @@
 </head>
 
 <body>
+<iframe src="nav.html" frameborder=no width="100%" scrolling="no" height=100% style="height: 60px; "></iframe>
+
 <div class="container">
     <!-- Static navbar -->
     <!-- Main component for a primary marketing message or call to action -->
-    <div class="jumbotron" style="padding-top: 4px; margin-top: 20px;">
-        <h2>Mia API Doc List</h2>
+    <div class="jumbotron" style="padding-top: 10px; margin-top: 4px;">
+        <!--<h2>Mia API Doc List</h2>-->
         <p>
             <a id="btnNewApi" style="margin-top: 10px;" class="btn btn-info" href="api.html" target="_blank"
                role="button">New Api &raquo;</a>
             <a id="btnNewStruct" style="margin-top: 10px;" class="btn btn-info" href="struct.html" target="_blank"
                role="button">New Struct &raquo;</a>
-        <div class="input-group" style="width: 30%">
+        <div class="input-group" style="width: 40%;display: inline-table;">
+            <input id="txt_api_name" type="text" class="form-control" placeholder="Api url..." list="type_data_api">
+            <datalist id="type_data_api">
+            </datalist>
+            <span class="input-group-btn">
+            <button id="btn_search_api" class="btn btn-default" type="button">Search API</button>
+            </span>
+        </div>
+
+        <div class="input-group" style="width: 40%; margin-top: 4px;display: inline-table;">
             <input id="txt_struct_name" type="text" class="form-control" placeholder="Struct name..." list="type_data">
             <datalist id="type_data">
             </datalist>
             <span class="input-group-btn">
-            <button id="btn_search_struct" class="btn btn-default" type="button">Search!</button>
+            <button id="btn_search_struct" class="btn btn-default" type="button">Search Struct</button>
             </span>
         </div>
 
@@ -64,6 +76,6 @@
 <script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script src="js/vue.js"></script>
 <script src="js/common.js"></script>
-<script src="js/list.js"></script>
+<script src="js/manage.js"></script>
 </body>
 </html>

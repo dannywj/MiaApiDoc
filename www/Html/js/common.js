@@ -146,6 +146,14 @@ function redMarkWiki(str) {
     return str.replace("]]", ")]]");
 }
 
+function formatUrlKey(url) {
+    return url.replaceAll("/", "_").TrimStr('_');
+}
+
+function formatStructKey(key) {
+    return "struct_{0}".format(key);
+}
+
 function scrollToEnd() {
     var h = $(document).height() - $(window).height();
     $(document).scrollTop(h);
@@ -179,7 +187,17 @@ function ajaxGetJson(s, f, params, callback, error_callback, page_loading) {
                 error_callback(data);
             } else {
                 console.error(data);
-                alert("get api[{0}] error!".format(s + f));
+                switch (data.status) {
+                    case 201:
+                        alert("Invalid user identity，please login");
+                        window.location = 'login.html';
+                        break;
+                    case 203:
+                        alert("Invalid permission");
+                        break;
+                    default:
+                        alert("get api[{0}] error!".format(s + ' ' + f));
+                }
             }
         }
     });
@@ -200,7 +218,17 @@ function ajaxPostJson(s, f, params, callback, error_callback, page_loading) {
                 error_callback(data);
             } else {
                 console.error(data);
-                alert("post api[{0}] error!".format(s + f));
+                switch (data.status) {
+                    case 201:
+                        alert("Invalid user identity，please login");
+                        window.location = 'login.html';
+                        break;
+                    case 203:
+                        alert("Invalid permission");
+                        break;
+                    default:
+                        alert("post api[{0}] error!".format(s + ' ' + f));
+                }
             }
         }
     });

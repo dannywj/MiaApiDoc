@@ -106,16 +106,12 @@ function scrollHash() {
     }
 }
 
-function formatUrlKey(url) {
-    return url.replaceAll("/", "_").TrimStr('_');
-}
-
-function formatStructKey(key) {
-    return "struct_{0}".format(key);
-}
-
 // Init
 $(function () {
     getAllApiList();
     getAllStruct();
 });
+
+function setTitle() {
+    $("iframe").contents().find('#main_title').html('Mia API Doc Detail');
+}

@@ -5,8 +5,8 @@
  * jue.wang@yulore.com
  * 2015-07-20
  */
-define('ENV', 'dev');
-define('DEBUG', true);
+define('ENV', 'online');
+define('DEBUG', false);
 require(__DIR__ . '/Core/Init.php');
 $api = new  ApiDocs\Api\Api();
 $api->init();

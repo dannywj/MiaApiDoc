@@ -357,7 +357,12 @@ function insertApiData(api_data) {
         alert('Add Success!');
         window.location = 'api.html?id={0}'.format(re);
     }, function (err_data) {
-        alert("Add Error! " + err_data.msg);
+        if(err_data.status==201){
+            alert("Invalid user identity，please login");
+            window.location='login.html';
+        }else {
+            alert("Add Error! " + err_data.msg);
+        }
     }, true);
 }
 
@@ -367,7 +372,12 @@ function updateApiData(api_data) {
         last_api_data = deepCopy(api_data);
         window.location = window.location;
     }, function (err_data) {
-        alert("Update Error! " + err_data.msg);
+        if(err_data.status==201){
+            alert("Invalid user identity，please login");
+            window.location='login.html';
+        }else {
+            alert("Update Error! " + err_data.msg);
+        }
     }, true);
 }
 

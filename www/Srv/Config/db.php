@@ -16,14 +16,14 @@ return [
         ]
     ],
 
-    'dev'=>[
-        'ApiDocs' => [
-            'host' => 'localhost',
-            'dbname' => 'mia',
-            'user' => 'root',
-            'password' => 'root',
-            'charset' => 'utf8',
-            'port' => '3306',
-        ]
-    ]
+//    'dev'=>[
+//        'ApiDocs' => [
+//            'host' => 'localhost',
+//            'dbname' => 'mia',
+//            'user' => 'root',
+//            'password' => 'root',
+//            'charset' => 'utf8',
+//            'port' => '3306',
+//        ]
+//    ]
 ];

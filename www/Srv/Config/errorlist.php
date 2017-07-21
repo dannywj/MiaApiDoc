@@ -29,6 +29,14 @@ return [
         'message' => '用户请求非法',
         'info' => 'Invalid request.',
     ],
+    202 => [
+        'message' => '用户名或密码错误',
+        'info' => 'Invalid user or password.',
+    ],
+    203 => [
+        'message' => '没有操作权限',
+        'info' => 'Invalid permission.',
+    ],
 
     //======3xx类错误：数据相关======
     301 => [

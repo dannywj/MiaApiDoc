@@ -60,7 +60,7 @@ class Mysql extends \mysqli {
         $value = implode(',', $values);
 
         $sql = "INSERT INTO `" . $table . "` " . $key . " VALUES " . $value;
-        \ApiDocs\Core\Log::info('insert sql:' . addslashes($sql));
+        //\ApiDocs\Core\Log::info('insert sql:' . addslashes($sql));
         $this->query($sql);
         return $this->insert_id;
     }

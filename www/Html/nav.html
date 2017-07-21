@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Mia Api Doc List</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+    <!-- Bootstrap core CSS -->
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/common.css" type="text/css" rel="stylesheet"/>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body style="height: 50px;">
+<!-- Static navbar -->
+<nav class="navbar navbar-default navbar-static-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a id="main_title" class="navbar-brand" href="#" title="Index Page">Mia API Doc Detail</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a id="btn_detail" href="#">Detail</a></li>
+                <li class="active"><a id="btn_manage" href="#">Manage</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a id="sp_welcome" href="#"></a></li>
+                <li><a id="btn_login" href="#">Login</a> <a id="btn_logout" href="#" style="display: none">Logout</a>
+                </li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+</body>
+<script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="js/common.js"></script>
+<script>
+    $("#btn_login").click(function () {
+        parent.location = 'login.html';
+    });
+
+    $("#btn_detail,#main_title").click(function () {
+        parent.location = 'detail.html';
+    });
+
+    $("#btn_manage").click(function () {
+        parent.location = 'manage.html';
+    });
+
+    $("#btn_logout").click(function () {
+        if (confirm('Are you sure?')) {
+            ajaxGetJson('User/Api', 'logout', {}, function (re) {
+                parent.location = parent.location;
+            }, null, true);
+        }
+    });
+
+    ajaxGetJson('User/Api', 'getUserInfo', {}, function (re) {
+        if (re != null) {
+            var name = "{0} <span class='red'>{1}</span>".format(re.type == 0 ? 'Developer' : 'Admin', re.username);
+            $("#sp_welcome").html('welcome ' + name);
+            $("#btn_logout").show();
+            $("#btn_login").hide();
+        }
+    });
+
+    window.parent.setTitle();
+</script>
+</html>
