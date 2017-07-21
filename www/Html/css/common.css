@@ -127,3 +127,21 @@ table.wiki td {
     width: 48px;
     background: url("../images/r_top.png");
 }
+
+.api_list_label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: -16px;
+    margin-top: 10px;
+}
+
+.api_list_table_label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.smallt {
+    font-size: 10px;
+    color: #999999;
+}

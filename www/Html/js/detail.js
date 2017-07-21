@@ -11,11 +11,16 @@ function getAllApiList() {
     loadingDiv('#sp_result');
     ajaxGetJson('Docs/Api', 'getAllList', {order_by: 'url asc'}, function (re) {
         //ul-list
+        var item_list = {};
         var html = '';
+        // 第一次循环，构造label_name为key的JS对象（关联数组）
         for (var i = 0; i < re.length; i++) {
-            var info = re[i];
-            html += '<li><a href="#{0}">{1}  -  {2}</a></li>'.format(formatUrlKey(info.url), info.url, info.name);
+            if (item_list[re[i]['sort'] + re[i]['label_name']] == undefined) {
+                item_list[(re[i]['sort'] + re[i]['label_name'])] = [];
+            }
+            item_list[(re[i]['sort'] + re[i]['label_name'])].push(re[i]);
 
+            // 构造api_data_list
             var item = {
                 api_name: re[i].name,
                 api_url: re[i].url,
@@ -27,6 +32,16 @@ function getAllApiList() {
                 show_output: JSON.parse(re[i].output_params).length > 0 ? true : false
             };
             api_data_list.push(item);
+
+        }
+
+        // 循环对象内key，构造列表
+        for (var key in item_list) {
+            html += '<span class="api_list_label">{0}</span>'.format(key.replace(/[\d]+/, ''));
+            for (var j = 0; j < item_list[key].length; j++) {
+                var info = item_list[key][j];
+                html += '<li><a href="#{0}">{1}  -  {2}</a></li>'.format(formatUrlKey(info.url), info.url, info.name);
+            }
         }
         $("#ul_apilist").html(html);
 

@@ -9,7 +9,8 @@ namespace ApiDocs\Api\Docs;
 class Api extends \ApiDocs\Api\Base\ApiBase {
     public function getAllList() {
         $order_by = $this->checkParam('order_by', 'id asc');
-        $sql = "SELECT * FROM api_info ORDER BY {$order_by}";
+        $sql = "SELECT a.*,l.label_name,l.sort FROM `api_info` a LEFT JOIN label_info l on a.label_id=l.id
+                order by sort desc,a.id asc;";
         $db = parent::getDbApiDocs();
         $result = $db->Select($sql);
         $this->success($result);
