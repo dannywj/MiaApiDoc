@@ -15,12 +15,30 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
     }
 
     public function register() {
-        //todo
+        $username = $this->checkParam('username');
+        $password = $this->checkParam('password');
+        $password = md5($password);
+        $info = array(
+            'username' => $username,
+            'password' => $password,
+            'type' => 0,
+            'status' => 0,
+            'create_time' => date('Y-m-d H:i:s'),
+        );
+
+        $db = parent::getDbApiDocs();
+        $id = $db->Insert($info, 'user_info');
+        if ($id) {
+            $this->success($id);
+        } else {
+            $this->error(103);
+        }
     }
 
     public function login() {
         $username = $this->checkParam('username');
         $password = $this->checkParam('password');
+        $password = md5($password);
         $sql = "SELECT * FROM user_info where username='{$username}' and password='{$password}' ";
         $db = parent::getDbApiDocs();
         $result = $db->GetOne($sql);

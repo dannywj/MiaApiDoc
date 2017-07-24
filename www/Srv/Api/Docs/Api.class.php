@@ -69,7 +69,6 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
             'add_time' => date('Y-m-d H:i:s'),
             'label_id' => $arr_api_data['label_id'],
         );
-        $db = parent::getDbApiDocs();
         // check url
         $url = strtolower($info['url']);
         $sql = "SELECT * FROM api_info where lower(url)='{$url}' ";
