@@ -59,7 +59,7 @@ class Struct extends \ApiDocs\Api\Base\ApiBase {
         $info = array(
             'name' => $arr_struct_data['struct_name'],
             'desp' => $arr_struct_data['struct_desp'],
-            'params' => json_encode($arr_struct_data['params']),
+            'params' => json_encode($arr_struct_data['params'], JSON_UNESCAPED_UNICODE),
             'create_user' => $this->user_info['username'],
             'add_time' => date('Y-m-d H:i:s'),
         );
@@ -79,7 +79,7 @@ class Struct extends \ApiDocs\Api\Base\ApiBase {
         $id = $arr_struct_data['id'];
         $name = $arr_struct_data['struct_name'];
         $desp = $arr_struct_data['struct_desp'];
-        $params = json_encode($arr_struct_data['params']);
+        $params = json_encode($arr_struct_data['params'], JSON_UNESCAPED_UNICODE);
 
         $last_modify_user = $this->user_info['username'];
         $update_time = date('Y-m-d H:i:s');

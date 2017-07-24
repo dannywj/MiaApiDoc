@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Mia API Docs</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
     <script src="js/jsonFormater.js" type="text/javascript"></script>
     <link href="css/jsonFormater.css" type="text/css" rel="stylesheet"/>
     <link href="css/common.css" type="text/css" rel="stylesheet"/>
@@ -51,7 +51,9 @@
             input params:&nbsp;
             <button id="btn_input_addKey" type="button" class="btn btn-success btn-sm" value=""> add</button>
             &nbsp;&nbsp;
-            <button id="btn_sort_input" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal_input">sort</button>
+            <button id="btn_sort_input" type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                    data-target="#myModal_input">sort
+            </button>
         </p>
         <div id="input_params_keys">
             <form v-for="item in params" id="key_form_1" class="form-inline keyList" style="margin-top: 4px;">
@@ -87,7 +89,9 @@
             output params:&nbsp;
             <button id="btn_output_addKey" type="button" class="btn btn-success btn-sm" value=""> add</button>
             &nbsp;&nbsp;
-            <button id="btn_sort_output" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal_output">sort</button>
+            <button id="btn_sort_output" type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                    data-target="#myModal_output">sort
+            </button>
         </p>
         <div id="output_params_keys">
             <form v-for="item in params" id="key_form_2" class="form-inline keyList" style="margin-top: 4px;">
@@ -127,15 +131,22 @@
                role="button">Save
                 API &raquo;</a>
 
-            <a id="btnGenWiki" style="margin-top: 10px;" class="btn btn-info" href="javascript:void(0);"
-               role="button">Generate Wiki Code&raquo;</a>
+            <!--<a id="btnGenWiki" style="margin-top: 10px;" class="btn btn-info" href="javascript:void(0);"-->
+               <!--role="button">Generate Wiki Code&raquo;</a>-->
             <a id="btnGenPHP" style="margin-top: 10px;" class="btn btn-info" href="javascript:void(0);"
                role="button">Generate PHP Code &raquo;</a>
             <a id="btnGenJsonResult" style="margin-top: 10px;" class="btn btn-warning" href="javascript:void(0);"
                role="button">API JsonResult &raquo;</a>
         </p>
         <!--buttons-->
-
+        <!--others-->
+        <p>
+            label:&nbsp;
+            <select id="slt_label" style="font-size: 14px;height: 23px;">
+                <option value="0">select</option>
+            </select>
+        </p>
+        <!--others-->
         <!--preview begin-->
         <div id="sp_result_div" class="panel panel-info">
             <div id="tblData"></div>
@@ -236,7 +247,8 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="myModalLabel">Sort the params</h4>
                 </div>
                 <div class="modal-body">
@@ -255,8 +267,9 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" >Sort the params</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Sort the params</h4>
                 </div>
                 <div class="modal-body">
                     <ul id="sort_list_output">

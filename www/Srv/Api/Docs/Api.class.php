@@ -9,7 +9,7 @@ namespace ApiDocs\Api\Docs;
 class Api extends \ApiDocs\Api\Base\ApiBase {
     public function getAllList() {
         $order_by = $this->checkParam('order_by', 'id asc');
-        $sql = "SELECT a.*,l.label_name,l.sort FROM `api_info` a LEFT JOIN label_info l on a.label_id=l.id
+        $sql = "SELECT a.*,l.label_name,l.sort,l.id as label_id FROM `api_info` a LEFT JOIN label_info l on a.label_id=l.id
                 order by sort desc,a.id asc;";
         $db = parent::getDbApiDocs();
         $result = $db->Select($sql);
@@ -63,10 +63,11 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
             'name' => $arr_api_data['api_name'],
             'url' => $arr_api_data['api_url'],
             'desp' => $arr_api_data['api_desp'],
-            'input_params' => json_encode($arr_api_data['input_params']),
-            'output_params' => json_encode($arr_api_data['output_params']),
+            'input_params' => json_encode($arr_api_data['input_params'], JSON_UNESCAPED_UNICODE),
+            'output_params' => json_encode($arr_api_data['output_params'], JSON_UNESCAPED_UNICODE),
             'create_user' => $this->user_info['username'],
             'add_time' => date('Y-m-d H:i:s'),
+            'label_id' => $arr_api_data['label_id'],
         );
         $db = parent::getDbApiDocs();
         // check url
@@ -94,8 +95,9 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
         $name = $arr_api_data['api_name'];
         $url = $arr_api_data['api_url'];
         $desp = $arr_api_data['api_desp'];
-        $input_params = json_encode($arr_api_data['input_params']);
-        $output_params = json_encode($arr_api_data['output_params']);
+        $input_params = json_encode($arr_api_data['input_params'], JSON_UNESCAPED_UNICODE);
+        $output_params = json_encode($arr_api_data['output_params'], JSON_UNESCAPED_UNICODE);
+        $label_id = intval($arr_api_data['label_id']);
 
         $url = trim($url);
         $url = trim($url, '/');
@@ -104,7 +106,7 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
         $update_time = date('Y-m-d H:i:s');
 
         $sql = "update api_info set name='{$name}',url='{$url}',desp='{$desp}',input_params='{$input_params}',output_params='{$output_params}',
-                last_modify_user='{$last_modify_user}',update_time='{$update_time}' where id={$id}";
+                last_modify_user='{$last_modify_user}',update_time='{$update_time}',label_id={$label_id} where id={$id}";
         $db = parent::getDbApiDocs();
 
         $result = $db->query($sql);
@@ -113,5 +115,12 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
         } else {
             $this->error(103);
         }
+    }
+
+    public function getAllLabel() {
+        $sql = "SELECT * FROM `label_info`;";
+        $db = parent::getDbApiDocs();
+        $result = $db->Select($sql);
+        $this->success($result);
     }
 }

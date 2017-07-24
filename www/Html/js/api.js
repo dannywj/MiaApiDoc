@@ -7,6 +7,7 @@ var tbl_preview;
 var last_api_data = {};// 记录上一次修改的数据，用于和最新数据比较，控制tips弹层展示
 var params_sorted_input_result = [];
 var params_sorted_output_result = [];
+
 // Init
 function initData() {
     var query_string = GetRequest();
@@ -23,7 +24,8 @@ function initData() {
             api_url: '',
             api_desp: '',
             input_params: [],
-            output_params: []
+            output_params: [],
+            label_id: 0
         };
         bindForm();
     }
@@ -38,7 +40,8 @@ function getDataFromDB(id) {
             api_url: re.url,
             api_desp: re.desp,
             input_params: JSON.parse(re.input_params),
-            output_params: JSON.parse(re.output_params)
+            output_params: JSON.parse(re.output_params),
+            label_id: parseInt(re.label_id)
         };
         bindForm();
         showPreviewTable();
@@ -140,6 +143,19 @@ function bindForm() {
                 //this.item.state = !state; //this关键字指定修改当前项数据值
             }
         }
+    });
+
+    // other info
+    ajaxGetJson('Docs/Api', 'getAllLabel', {}, function (re) {
+        var options = '';
+        options += '<option value ="{0}" >{1}</option>'.format(0, 'select');
+        for (var i = 0; i < re.length; i++) {
+            log(re[i]);
+            options += '<option value ="{0}" >{1}</option>'.format(re[i].id, re[i].label_name);
+        }
+        $("#slt_label").html(options);
+        // bind default data
+        $("#slt_label").setSelectedValue(api_data.label_id);
     });
 }
 
@@ -333,6 +349,7 @@ function getLastData() {
 // 定时检查数据是否改变
 function checkUpdate() {
     if (api_data && last_api_data) {
+        log(JSON.stringify(api_data) + '====' + JSON.stringify(last_api_data));
         if (JSON.stringify(api_data) === JSON.stringify(last_api_data)) {
             $("#saveTips").hide();
         } else {
@@ -357,10 +374,10 @@ function insertApiData(api_data) {
         alert('Add Success!');
         window.location = 'api.html?id={0}'.format(re);
     }, function (err_data) {
-        if(err_data.status==201){
+        if (err_data.status == 201) {
             alert("Invalid user identity，please login");
-            window.location='login.html';
-        }else {
+            window.location = 'login.html';
+        } else {
             alert("Add Error! " + err_data.msg);
         }
     }, true);
@@ -372,10 +389,10 @@ function updateApiData(api_data) {
         last_api_data = deepCopy(api_data);
         window.location = window.location;
     }, function (err_data) {
-        if(err_data.status==201){
+        if (err_data.status == 201) {
             alert("Invalid user identity，please login");
-            window.location='login.html';
-        }else {
+            window.location = 'login.html';
+        } else {
             alert("Update Error! " + err_data.msg);
         }
     }, true);
@@ -524,4 +541,8 @@ $("#btn_save_sort_output").click(function () {
         checkApiData(api_data);
         updateApiData(api_data);
     }
+});
+
+$("#slt_label").change(function () {
+    api_data.label_id = parseInt($("#slt_label").val());
 });

@@ -250,3 +250,23 @@ function loadingPage(is_hide) {
 function log(info) {
     console.log(info);
 }
+
+jQuery.fn.setSelectedText = function (text) {
+    var isExist = false;
+    var count = this.dlSize();
+    for (var i = 0; i < count; i++) {
+        if (jQuery(this).get(0).options[i].text.toLocaleLowerCase() == text.toLocaleLowerCase()) {
+            jQuery(this).get(0).options[i].selected = true;
+            isExist = true;
+            break;
+        }
+    }
+};
+
+jQuery.fn.setSelectedValue = function (val) {
+    $(this).get(0).value = val;
+};
+
+jQuery.fn.getSelectedText = function () {
+    return $(this).find("option:selected").text();
+};

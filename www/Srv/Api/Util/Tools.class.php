@@ -1,4 +1,5 @@
 <?php
+
 namespace ApiDocs\Api\Util;
 /**
  * 工具类
@@ -45,7 +46,7 @@ class Tools {
         //set data
         if (!empty($data)) {
             if ($data_type == 'json') {
-                $post_data = json_encode($data);
+                $post_data = json_encode($data, JSON_UNESCAPED_UNICODE);
             } elseif ($data_type == 'raw') {
                 $post_data = $data;
             } else {
@@ -79,9 +80,9 @@ class Tools {
             $output = 'curl http request error.code:' . $code . ' response info' . $output;
         }
 
-        if($errno = curl_errno($handle)) {
-            \ApiDocs\Core\Log::error('CURL异常：url:'.$url.', method:'.$method);
-            \ApiDocs\Core\Log::error('CURL异常：curl_error:' .curl_error($handle). ', error_no:' .$errno. ' - ['. \ApiDocs\Api\Util\Http::$curl_strerror[$errno] .']');
+        if ($errno = curl_errno($handle)) {
+            \ApiDocs\Core\Log::error('CURL异常：url:' . $url . ', method:' . $method);
+            \ApiDocs\Core\Log::error('CURL异常：curl_error:' . curl_error($handle) . ', error_no:' . $errno . ' - [' . \ApiDocs\Api\Util\Http::$curl_strerror[$errno] . ']');
         }
         curl_close($handle);
         return $output;
@@ -93,7 +94,7 @@ class Tools {
      * @param $params_arr 添加的参数数组
      * @return string 添加后的url
      */
-    public static function  addUrlTail($url, $params_arr) {
+    public static function addUrlTail($url, $params_arr) {
         if (is_array($params_arr) && count($params_arr) > 0) {
             $url_tail = http_build_query($params_arr);
             if (strpos($url, '?') !== false) {
