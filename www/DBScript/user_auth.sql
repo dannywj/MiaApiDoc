@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50547
 File Encoding         : 65001
 
-Date: 2017-07-21 11:37:23
+Date: 2017-07-24 11:07:08
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -21,12 +21,12 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `user_auth`;
 CREATE TABLE `user_auth` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `auth_id` varchar(200) NOT NULL,
-  `create_time` datetime NOT NULL,
-  `expire_time` datetime NOT NULL,
+  `user_id` int(11) NOT NULL COMMENT '用户id',
+  `auth_id` varchar(200) NOT NULL COMMENT '登录授权码',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `expire_time` datetime NOT NULL COMMENT '过期时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user_auth
@@ -50,3 +50,5 @@ INSERT INTO `user_auth` VALUES ('16', '1', '90a4daadebe0c77cdc13a9f6ef483d28', '
 INSERT INTO `user_auth` VALUES ('17', '1', 'c93091ff39609c61aad370226084401d', '2017-07-21 10:39:59', '2017-07-28 10:39:59');
 INSERT INTO `user_auth` VALUES ('18', '1', '575af379a5bc0eee11e272e29e196dd1', '2017-07-21 11:13:28', '2017-07-28 11:13:28');
 INSERT INTO `user_auth` VALUES ('19', '1', '34df00f3d04a04d65a2639d9c135bc54', '2017-07-21 11:30:18', '2017-07-28 11:30:18');
+INSERT INTO `user_auth` VALUES ('20', '2', 'd4545df0b8aeb512091eb4bd85fcafce', '2017-07-24 11:02:03', '2017-07-31 11:02:03');
+INSERT INTO `user_auth` VALUES ('21', '1', 'a675a3f8dfa67e52a65cf8acc598fe65', '2017-07-24 11:02:41', '2017-07-31 11:02:41');
