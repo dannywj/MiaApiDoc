@@ -40,7 +40,7 @@ function getAllApiList() {
                 var info = item_list[key][j];
                 var btn = '<a id="btn" class="btn btn-danger btn-xs" href="javascript:void(0);" role="button" onclick="deleteApi(' + info.id + ')">Delete &raquo;</a>';
                 var other_info = '<td class="smallt">{0}<br/>{1}</td><td class="smallt">{2}<br/>{3}</td>'.format(info.create_user ? info.create_user : '', info.add_time ? info.add_time : '', info.last_modify_user ? info.last_modify_user : '', info.update_time ? info.update_time : '');
-                row += '<tr><td style=""><a id="{4}" target="_blank"  href="api.html?id={0}"> {1}  {2}</a></td>{5}<td>{3}</td></tr>'.format(info.id, info.url, info.name, btn, formatUrlKey(info.url), other_info);
+                row += '<tr><td style=""><a id="{4}" target="_blank"  href="api.html?id={0}"> {1}  {2}</a></td>{5}<td>{3}</td></tr>'.format(info.id, info.url, redMarkHtml(info.name), btn, formatUrlKey(info.url), other_info);
             }
         }
         row += '</table>';
@@ -77,7 +77,7 @@ function getAllStructList() {
             var info = data[i];
             var btn = '<a id="btn" class="btn btn-danger btn-xs" href="javascript:void(0);" role="button" onclick="deleteStruct(' + info.id + ')">Delete &raquo;</a>';
             info.add_time = info.add_time.substr(0, info.add_time.length - 3);
-            if(info.update_time){
+            if (info.update_time) {
                 info.update_time = info.update_time.substr(0, info.update_time.length - 3);
             }
             var other_info = '<td class="smallt">{0}<br/>{1}</td><td class="smallt">{2}<br/>{3}</td>'.format(info.create_user ? info.create_user : '', info.add_time ? info.add_time : '', info.last_modify_user ? info.last_modify_user : '', info.update_time ? info.update_time : '');
