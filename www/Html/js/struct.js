@@ -64,6 +64,9 @@ function getAllStructType() {
         }
         result.sort();
         var item = '';
+        g_all_base_type.forEach(function (val, index, arr) {
+            item += "<option value='{0}'>{0}</option>".format(val);
+        });
         result.forEach(function (val, index, arr) {
             item += "<option value='{0}'>{0}</option>".format(val);
         });
