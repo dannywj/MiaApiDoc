@@ -8,7 +8,7 @@
 namespace ApiDocs\Api\User;
 class Auth extends \ApiDocs\Api\Base\ApiBase {
 
-    const AUTH_EXPIRE_TIME = 3600 * 24 * 7;
+    const AUTH_EXPIRE_TIME = 604800;//3600 * 24 * 7
 
     public function generateAuthInfo($uid) {
         $new_auth_id = md5($uid . time() . 'danny');
