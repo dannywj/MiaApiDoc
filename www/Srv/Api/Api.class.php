@@ -2,7 +2,6 @@
 /**
  * API初始化类
  * Created by DannyWang
- * jue.wang@yulore.com
  * 2015-07-15
  */
 

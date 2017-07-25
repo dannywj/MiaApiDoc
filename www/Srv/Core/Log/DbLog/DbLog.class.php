@@ -2,7 +2,6 @@
 /**
  * 数据库日志记录类
  * Created by DannyWang
- * jue.wang@yulore.com
  * 2015-07-30
  */
 namespace ApiDocs\Core\Log\DbLog;

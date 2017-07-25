@@ -1,7 +1,6 @@
 <?php
 /**
  * Created by DannyWang
- * jue.wang@yulore.com
  * 2014-11-27
  */
 namespace ApiDocs\Core\Log\Monolog;

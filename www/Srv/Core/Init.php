@@ -3,7 +3,6 @@
  * API初始化
  * 环境配置
  * Created by DannyWang
- * jue.wang@yulore.com
  * 2015-07-15
  */
 error_reporting(0);

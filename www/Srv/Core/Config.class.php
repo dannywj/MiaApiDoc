@@ -2,7 +2,6 @@
 /**
  * 配置类
  * Created by DannyWang
- * jue.wang@yulore.com
  * 2015-07-20
  */
 namespace ApiDocs\Core;

@@ -2,7 +2,6 @@
 /**
  * API入口文件
  * Created by DannyWang
- * jue.wang@yulore.com
  * 2015-07-20
  */
 define('ENV', 'online');

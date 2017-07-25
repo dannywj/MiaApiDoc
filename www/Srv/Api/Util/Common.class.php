@@ -1,7 +1,6 @@
 <?php
 /**
  * Created by DannyWang
- * jue.wang@yulore.com
  * 2016/1/26
  */
 namespace ApiDocs\Api\Util;

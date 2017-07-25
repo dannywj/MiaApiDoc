@@ -2,7 +2,6 @@
 /**
  * API基类
  * Created by DannyWang
- * jue.wang@yulore.com
  * 2015/8/27
  */
 

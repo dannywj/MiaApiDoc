@@ -2,7 +2,6 @@
 /**
  * 错误代码处理类
  * Created by DannyWang
- * jue.wang@yulore.com
  * 2015-07-24
  */
 namespace ApiDocs\Core;

@@ -5,7 +5,6 @@
  * info：系统提示信息，方便出错调试和定位
  *
  * Created by DannyWang
- * jue.wang@yulore.com
  * 2015-07-24
  */
 return [
