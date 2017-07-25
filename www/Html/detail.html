@@ -38,7 +38,7 @@
                 <!--API预览-->
                 <div id="tbl_preview">
                     <div v-for="api_data in api_data_list">
-                        <h4 :id="api_data.key" style="padding-top: 6px;">{{api_data.api_name}}</h4>
+                        <h4 :id="api_data.key" style="padding-top: 6px;"><span v-html="mark_desp(api_data.api_name)"></span></h4>
                         <ul>
                             <li>URL
                             </li>

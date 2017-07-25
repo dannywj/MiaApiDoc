@@ -155,7 +155,7 @@
                  style="word-break: break-all;word-wrap: break-word; font-size: 12px;">
                 <!--API预览-->
                 <div id="tbl_preview" style="display: none">
-                    <h3 id="name1">{{api_data.api_name}}</h3>
+                    <h3 id="name1"><span v-html="mark_desp(api_data.api_name)"></span></h3>
                     <ul>
                         <li>URL
                         </li>
