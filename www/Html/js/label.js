@@ -6,7 +6,7 @@
 
 function getAllLabelList() {
     ajaxGetJson('Docs/Label', 'getAll', {}, function (re) {
-        log(re);
+        $("#sort_list").empty();
         re.forEach(function (val, index, arr) {
             var id = val['id'];
             var label_name = val['label_name'];
@@ -23,9 +23,10 @@ function getAllLabelList() {
                     ids.push(id);
                 });
                 ajaxGetJson('Docs/Label', 'updateSort', {ids: ids.join(',')}, function (re) {
-                    log(re);
-                });
 
+                }, function (data) {
+                    alert(data.msg);
+                }, true);
             }
         });
 
@@ -35,4 +36,16 @@ function getAllLabelList() {
 
 $(function () {
     getAllLabelList();
+});
+
+$("#btn_add").click(function () {
+    var label_name = $("#txt_label").val();
+    if (label_name) {
+        ajaxGetJson('Docs/Label', 'addOne', {label_name: label_name}, function (re) {
+            alert('add label success');
+            getAllLabelList();
+        }, function (data) {
+            alert(data.msg);
+        }, true);
+    }
 });

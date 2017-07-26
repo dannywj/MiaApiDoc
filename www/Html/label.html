@@ -23,20 +23,17 @@
 <div class="container">
     <!-- Static navbar -->
     <!-- Main component for a primary marketing message or call to action -->
-    <div class="jumbotron" style="padding-top: 10px; margin-top: 4px;">
+    <div class="jumbotron" style="padding-top: 10px; margin-top: 10px;">
         <h2>Mia API Doc Label</h2>
-
         <div class="form-inline" style="margin-top: 10px; margin-bottom: 10px;">
-
             <div class="form-group">
-                <input type="text" class="form-control" id="txt_label" placeholder="Label name">
+                <input type="text" class="form-control" id="txt_label" placeholder="New label name">
             </div>
-            <button type="button" class="btn btn-default">Add Label</button>
+            <button id="btn_add" type="button" class="btn btn-default">Add Label</button>
         </div>
-
         <div id="sp_result_div" class="panel panel-info">
             <div id="tblData"></div>
-            <div id="sp_result_div_title" class="panel-heading">Label List</div>
+            <div id="sp_result_div_title" class="panel-heading">Label Sort List</div>
             <div id="sp_result" class="panel-body" style="word-break: break-all;word-wrap: break-word;">
                 <ul id="sort_list">
                 </ul>
@@ -52,7 +49,6 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
 <script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script src="js/vue.js"></script>
 <script src="js/common.js"></script>
 <script src="js/label.js"></script>
 </body>

@@ -9,7 +9,7 @@ namespace ApiDocs\Api\Docs;
 
 class Label extends \ApiDocs\Api\Base\ApiBase {
     public function getAll() {
-        $sql = "SELECT * FROM label_info ORDER BY sort ASC ";
+        $sql = "SELECT * FROM label_info ORDER BY sort DESC ";
         $db = parent::getDbApiDocs();
         $result = $db->Select($sql);
         $this->success($result);
@@ -33,16 +33,15 @@ class Label extends \ApiDocs\Api\Base\ApiBase {
     }
 
     public function updateSort() {
-         $this->checkLogin();
+        $this->checkLogin();
         $ids = $this->checkParam('ids');
         $id_arr = explode(',', $ids);
-        //print_r($id_arr);
         $db = parent::getDbApiDocs();
         if (!empty($id_arr) && is_array($id_arr)) {
             $count = count($id_arr);
-            foreach ($id_arr as $k => $v) {
-                $sort = $count - $k;
-                $id = (int)$v;
+            for ($i = 0; $i < count($id_arr); $i++) {
+                $sort = $count - $i;
+                $id = (int)$id_arr[$i];
                 $sql = "update label_info set sort={$sort} where id={$id}";
                 $result = $db->query($sql);
             }
