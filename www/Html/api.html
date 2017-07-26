@@ -35,16 +35,16 @@
     <div class="jumbotron" style="padding-top: 4px; margin-top: 20px;">
         <h2>Mia API Docs</h2>
         <form id="api_base_info" class="form-inline" style="margin-bottom: 10px;">
-            <div class="input-group">
+            <div class="input-group" style="width: 100%;">
                 <span class="input-group-addon" id="basic-addon1"><span style="color: red">API Info:</span> https://api.miyabaobei.com/</span>
                 <input id="txt_api_url" type="text" class="form-control url" placeholder="url suffix" autocomplete="off"
-                       aria-describedby="basic-addon1" style="width: 180%"
+                       aria-describedby="basic-addon1" style=""
                        :value="api_data.api_url" v-model="api_data.api_url">
                 <input id="txt_api_name" type="text" class="form-control url" placeholder="API name" autocomplete="off"
-                       aria-describedby="basic-addon1" style="width: 180%"
+                       aria-describedby="basic-addon1" style=""
                        :value="api_data.api_name" v-model="api_data.api_name">
+                <textarea class="form-control url" id="txt_api_desp" v-model="api_data.api_desp" placeholder="API desp" style="height: 34px;">{{api_data.api_desp}}</textarea>
             </div>
-
         </form>
         <!--输入参数表单-->
         <p>
@@ -220,6 +220,13 @@
                             </tbody>
                         </table>
                     </blockquote>
+                    <template v-if="api_data.api_desp">
+                        <blockquote>
+                            <pre>{{api_data.api_desp}}</pre>
+                        </blockquote>
+                    </template>
+                    <template v-else>
+                    </template>
                 </div>
             </div>
         </div>

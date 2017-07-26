@@ -113,6 +113,13 @@
                                 无
                             </template>
                         </blockquote>
+                        <template v-if="api_data.api_desp">
+                            <blockquote>
+                                <pre>{{api_data.api_desp}}</pre>
+                            </blockquote>
+                        </template>
+                        <template v-else>
+                        </template>
                     </div>
                 </div>
                 <!--API预览end-->
