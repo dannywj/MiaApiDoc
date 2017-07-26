@@ -153,7 +153,6 @@ function bindForm() {
         var options = '';
         options += '<option value ="{0}" >{1}</option>'.format(0, 'select');
         for (var i = 0; i < re.length; i++) {
-            log(re[i]);
             options += '<option value ="{0}" >{1}</option>'.format(re[i].id, re[i].label_name);
         }
         $("#slt_label").html(options);
@@ -549,3 +548,7 @@ $("#btn_save_sort_output").click(function () {
 $("#slt_label").change(function () {
     api_data.label_id = parseInt($("#slt_label").val());
 });
+
+function setTitle() {
+    $("iframe").contents().find('#main_title').html('Mia API Docs');
+}

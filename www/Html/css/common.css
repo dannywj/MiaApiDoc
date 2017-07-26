@@ -2,6 +2,10 @@
     color: red;
 }
 
+.gray {
+    color: #b5b5b5;
+}
+
 li {
     font-size: 14px;
 }

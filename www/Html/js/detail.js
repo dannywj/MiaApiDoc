@@ -40,7 +40,7 @@ function getAllApiList() {
             html += '<span class="api_list_label">{0}</span>'.format(key.replace(/[\d]+/, ''));
             for (var j = 0; j < item_list[key].length; j++) {
                 var info = item_list[key][j];
-                html += '<li><a href="#{0}">{1}  -  {2}</a></li>'.format(formatUrlKey(info.url), info.url, redMarkHtml(info.name));
+                html += '<li><a href="#{0}">{1}  -  {2}   &nbsp;&nbsp; <span class="gray">[developer:{3}]</span></a></li>'.format(formatUrlKey(info.url), info.url, redMarkHtml(info.name), info.last_modify_user ? info.last_modify_user : info.create_user);
             }
         }
         $("#ul_apilist").html(html);
