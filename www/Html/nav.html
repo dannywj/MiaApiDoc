@@ -34,6 +34,7 @@
             <ul class="nav navbar-nav">
                 <li class="active"><a id="btn_detail" href="#">Detail</a></li>
                 <li class="active"><a id="btn_manage" href="#">Manage</a></li>
+                <li class="active"><a id="btn_label" href="#">Label</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a id="sp_welcome" href="#"></a></li>
@@ -57,6 +58,10 @@
 
     $("#btn_manage").click(function () {
         parent.location = 'manage.html';
+    });
+
+    $("#btn_label").click(function () {
+        parent.location = 'label.html';
     });
 
     $("#btn_logout").click(function () {

@@ -49,3 +49,7 @@ $("#btn_add").click(function () {
         }, true);
     }
 });
+
+function setTitle() {
+    $("iframe").contents().find('#main_title').html('Mia API Doc Label');
+}
