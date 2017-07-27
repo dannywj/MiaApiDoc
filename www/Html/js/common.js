@@ -142,8 +142,8 @@ function redMarkHtml(str) {
 }
 
 function redMarkWiki(str) {
-    str = str.replace("[[", "[[span(style=color: #FF0000,");
-    return str.replace("]]", ")]]");
+    str = str.replace(/\[\[/g, "[[span(style=color: #FF0000,");
+    return str.replace(/\]\]/g, ")]]");
 }
 
 function formatUrlKey(url) {
