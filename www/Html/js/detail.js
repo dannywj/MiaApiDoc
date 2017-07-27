@@ -125,8 +125,24 @@ function scrollHash() {
 $(function () {
     getAllApiList();
     getAllStruct();
+    getAllContent();
 });
 
 function setTitle() {
     $("iframe").contents().find('#main_title').html('Mia API Doc Detail');
+}
+
+function getAllContent() {
+    ajaxGetJson('Docs/Content', 'getAll', {}, function (re) {
+        var html = '';
+        var content_html = '';
+        for (var i = 0; i < re.length; i++) {
+            var info = re[i];
+            html += '<li><a href="#content_{0}">{1}</a></li>'.format(info.id, info.title);
+            content_html += '<h4 id="content_{0}">{1}</h4>'.format(info.id, info.title);
+            content_html += '<pre>{0}</pre>'.format(info.content);
+        }
+        $("#ul_content_list").html(html);
+        $("#content_preview").html(content_html);
+    });
 }

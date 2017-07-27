@@ -18,6 +18,14 @@ function deleteStruct(id) {
     }
 }
 
+function deleteContent(id) {
+    if (confirm('Are you sure?')) {
+        ajaxGetJson('Docs/Content', 'deleteOne', {id: id}, function (re) {
+            getAllContentList();
+        }, null, true);
+    }
+}
+
 function getAllApiList() {
     loadingDiv('#sp_result');
     ajaxGetJson('Docs/Api', 'getAllList', {}, function (re) {
@@ -108,6 +116,7 @@ function getAllStructList() {
 $(function () {
     getAllApiList();
     getAllStructList();
+    getAllContentList();
 });
 
 $("#btn_search_struct").click(function () {
@@ -126,4 +135,25 @@ $("#btn_search_api").click(function () {
 
 function setTitle() {
     $("iframe").contents().find('#main_title').html('Mia API Doc Manage');
+}
+
+function getAllContentList() {
+    loadingDiv('#sp_content');
+    ajaxGetJson('Docs/Content', 'getAll', {}, function (re) {
+        var data = re;
+        var row = '<table class="table table-bordered">';
+        row += '<tr><th style="">{0}</th><th>{1}</th><th>{2}</th><th>{3}</th></tr>'.format('title', 'create info', 'update info', 'operation');
+        for (var i = 0; i < data.length; i++) {
+            var info = data[i];
+            var btn = '<a id="btn" class="btn btn-danger btn-xs" href="javascript:void(0);" role="button" onclick="deleteContent(' + info.id + ')">Delete &raquo;</a>';
+            info.add_time = info.add_time.substr(0, info.add_time.length - 3);
+            if (info.update_time) {
+                info.update_time = info.update_time.substr(0, info.update_time.length - 3);
+            }
+            var other_info = '<td class="smallt">{0}<br/>{1}</td><td class="smallt">{2}<br/>{3}</td>'.format(info.create_user ? info.create_user : '', info.add_time ? info.add_time : '', info.last_modify_user ? info.last_modify_user : '', info.update_time ? info.update_time : '');
+            row += '<tr><td><a target="_blank"  href="content.html?id={3}"> {0}</a></td>{1}<td>{2}</td></tr>'.format(info.title, other_info, btn, info.id);
+        }
+        row += '</table>';
+        $("#sp_content").html(row);
+    });
 }
