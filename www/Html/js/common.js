@@ -137,8 +137,8 @@ function isJson(str) {
 }
 
 function redMarkHtml(str) {
-    str = str.replace("[[", "<span class='red'>");
-    return str.replace("]]", "</span>");
+    str = str.replace(/\[\[/g, "<span class='red'>");
+    return str.replace(/\]\]/g, "</span>");
 }
 
 function redMarkWiki(str) {
