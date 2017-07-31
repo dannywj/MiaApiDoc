@@ -2,8 +2,20 @@
  * Content Business
  * Created by DannyWang
  */
+var ue;
 
 function init() {
+    ue = UE.getEditor('editor', {
+        toolbars: [[
+            'fullscreen', 'source', '|', 'undo', 'redo', '|',
+            'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
+            'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
+            'lineheight', '|', 'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
+            'link', 'unlink', 'anchor', '|',
+            'emotion', 'insertcode', 'pagebreak', '|',
+            'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|', 'help'
+        ]], initialFrameHeight: 500
+    });
     var query_string = GetRequest();
     var content_id = query_string['id'];
     if (content_id) {
@@ -14,7 +26,7 @@ function init() {
 function bindData(id) {
     ajaxGetJson('Docs/Content', 'getOne', {id: id}, function (re) {
         $("#txt_title").val(re.title);
-        $("#txt_content").html(re.content);
+        ue.setContent(re.content);
         $("#slt_project").val(re.project_id);
         $("#btn_add").hide();
         $("#btn_update").show();
@@ -39,7 +51,7 @@ $(function () {
 
 $("#btn_add").click(function () {
     var title = $("#txt_title").val();
-    var content = $("#txt_content").val();
+    var content = ue.getContent();
     if (title.length == 0 || content.length == 0) {
         alert('please input info');
         return false;
@@ -61,7 +73,7 @@ $("#btn_update").click(function () {
     var query_string = GetRequest();
     var content_id = query_string['id'];
     var title = $("#txt_title").val();
-    var content = $("#txt_content").val();
+    var content = ue.getContent();
     if (title.length == 0 || content.length == 0) {
         alert('please input info');
         return false;

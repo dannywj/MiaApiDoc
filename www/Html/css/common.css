@@ -66,7 +66,7 @@ table.wiki td {
     -webkit-box-pack: center;
     -webkit-box-align: center;
     background: rgba(255, 255, 255, .7);
-    z-index: 99
+    z-index: 9999
 }
 
 .loading_box {
@@ -148,4 +148,16 @@ table.wiki td {
 .smallt {
     font-size: 10px;
     color: #999999;
+}
+
+table {
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 14px;
+}
+
+td {
+    border: 1px solid #ccc;
+    padding: .1em .25em;
 }
