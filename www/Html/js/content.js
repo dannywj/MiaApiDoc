@@ -16,6 +16,7 @@ function init() {
             'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|', 'help'
         ]], initialFrameHeight: 500
     });
+
     var query_string = GetRequest();
     var content_id = query_string['id'];
     if (content_id) {
@@ -26,7 +27,10 @@ function init() {
 function bindData(id) {
     ajaxGetJson('Docs/Content', 'getOne', {id: id}, function (re) {
         $("#txt_title").val(re.title);
-        ue.setContent(re.content);
+        ue.ready(function () {
+            ue.setContent(re.content);
+        });
+
         $("#slt_project").val(re.project_id);
         $("#btn_add").hide();
         $("#btn_update").show();
