@@ -84,11 +84,17 @@ class Struct extends \ApiDocs\Api\Base\ApiBase {
         $last_modify_user = $this->user_info['username'];
         $update_time = date('Y-m-d H:i:s');
 
-        $sql = "update struct_info set name='{$name}',desp='{$desp}',params='{$params}',
-                last_modify_user='{$last_modify_user}',update_time='{$update_time}'
-                where id={$id}";
+        $set_info = array(
+            'name' => $name,
+            'desp' => $desp,
+            'params' => $params,
+            'last_modify_user' => $last_modify_user,
+            'update_time' => $update_time,
+        );
+        $where = "id={$id}";
+
         $db = parent::getDbApiDocs();
-        $result = $db->query($sql);
+        $result = $db->Update($set_info, $where, 'struct_info');
         if ($db->affected_rows === 1) {
             $this->success($result);
         } else {

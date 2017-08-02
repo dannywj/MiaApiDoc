@@ -63,4 +63,24 @@ class Mysql extends \mysqli {
         $this->query($sql);
         return $this->insert_id;
     }
+
+    public function Execute($sql) {
+        $this->query($sql);
+        if ($this->errno) {
+            throw new \ApiDocs\Core\Exception\ServerException('databases error:' . $this->error);
+        }
+    }
+
+    public function Update($lists, $where, $table) {
+        if (!is_array($lists) || empty($lists)) {
+            throw new \ApiDocs\Core\Exception\ServerException('$lists not valid');
+        }
+        $values = array();
+        foreach ($lists as $k => $v) {
+            $values[] = "{$k}='" . addslashes($v) . "'";
+        }
+        $value = implode(',', $values);
+        $sql = "UPDATE `" . $table . "` set " . $value . " WHERE " . $where;
+        $this->Execute($sql);
+    }
 }

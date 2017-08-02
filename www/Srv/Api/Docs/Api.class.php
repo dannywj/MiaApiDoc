@@ -104,11 +104,22 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
         $last_modify_user = $this->user_info['username'];
         $update_time = date('Y-m-d H:i:s');
 
-        $sql = "update api_info set name='{$name}',url='{$url}',desp='{$desp}',input_params='{$input_params}',output_params='{$output_params}',
-                last_modify_user='{$last_modify_user}',update_time='{$update_time}',label_id={$label_id} where id={$id}";
         $db = parent::getDbApiDocs();
 
-        $result = $db->query($sql);
+        $set_info=array(
+            'name'=>$name,
+            'url'=>$url,
+            'desp'=>$desp,
+            'input_params'=>$input_params,
+            'output_params'=>$output_params,
+            'last_modify_user'=>$last_modify_user,
+            'update_time'=>$update_time,
+            'label_id'=>$label_id,
+        );
+        $where="id={$id}";
+
+        $result = $db->Update($set_info,$where,'api_info');
+
         if ($db->affected_rows === 1) {
             $this->success($result);
         } else {
