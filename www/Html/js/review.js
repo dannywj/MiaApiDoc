@@ -5,11 +5,12 @@
 // Global
 var api_data_list = [];
 var struct_data_list = [];
+var version = '';
 
 // Data
 function getAllApiList() {
     loadingDiv('#sp_result');
-    ajaxGetJson('Docs/Api', 'getAllList', {order_by: 'url asc'}, function (re) {
+    ajaxGetJson('Docs/Api', 'getAllListVersion', {version: version}, function (re) {
         //ul-list
         var item_list = {};
         var html = '';
@@ -40,9 +41,7 @@ function getAllApiList() {
             html += '<span class="api_list_label">{0}</span>'.format(key.replace(/[\d]+/, ''));
             for (var j = 0; j < item_list[key].length; j++) {
                 var info = item_list[key][j];
-                var user = info.last_modify_user ? info.last_modify_user : info.create_user;
-                user = user.split('@')[0];
-                html += '<li><a href="#{0}">{1}  -  {2}   &nbsp;&nbsp; <span class="gray">[developer:{3}]</span></a></li>'.format(formatUrlKey(info.url), info.url, redMarkHtml(info.name) + redMarkVersion(info.create_version, info.update_version, info.current_version), user);
+                html += '<li><a href="#{0}">{1}  -  {2}   &nbsp;&nbsp; <span class="gray">[developer:{3}]</span></a></li>'.format(formatUrlKey(info.url), info.url, redMarkHtml(info.name) + redMarkVersion(info.create_version, info.update_version, version), info.last_modify_user ? info.last_modify_user : info.create_user);
             }
         }
         $("#ul_apilist").html(html);
@@ -70,7 +69,7 @@ function bindDetail() {
 }
 
 function getAllStruct() {
-    ajaxGetJson('Docs/Struct', 'getAllList', {}, function (re) {
+    ajaxGetJson('Docs/Struct', 'getAllListVersion', {version: version}, function (re) {
         for (var i = 0; i < re.length; i++) {
             var item = {
                 struct_name: re[i].name,
@@ -125,22 +124,19 @@ function scrollHash() {
 
 // Init
 $(function () {
-    getAllApiList();
-    getAllStruct();
-    getAllContent();
+    var query_string = GetRequest();
+    var v = query_string['v'];
+    if (v) {
+        version = v;
+        $("#sp_ver").html(version.replaceAll('_', '.'));
+        getAllApiList();
+        getAllStruct();
+    } else {
+        alert("invalid version");
+    }
+
 });
 
 function setTitle() {
-    $("iframe").contents().find('#main_title').html('Mia API Doc Detail');
-}
-
-function getAllContent() {
-    ajaxGetJson('Docs/Content', 'getAll', {}, function (re) {
-        var html = '';
-        for (var i = 0; i < re.length; i++) {
-            var info = re[i];
-            html += '<li><a target="_blank" href="content_view.html?id={0}">{1}</a></li>'.format(info.id, info.title);
-        }
-        $("#ul_content_list").html(html);
-    });
+    $("iframe").contents().find('#main_title').html('Mia API Doc Review');
 }

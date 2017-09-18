@@ -9,7 +9,8 @@ namespace ApiDocs\Api\Docs;
 class Api extends \ApiDocs\Api\Base\ApiBase {
     public function getAllList() {
         $order_by = $this->checkParam('order_by', 'id asc');
-        $sql = "SELECT a.*,l.label_name,l.sort,l.id as label_id FROM `api_info` a LEFT JOIN label_info l on a.label_id=l.id
+        $sql = "SELECT a.*,l.label_name,l.sort,l.id as label_id ,(SELECT version from version_info ORDER BY id desc limit 1) as current_version
+                FROM `api_info` a LEFT JOIN label_info l on a.label_id=l.id
                 order by sort desc,a.id asc;";
         $db = parent::getDbApiDocs();
         $result = $db->Select($sql);
@@ -31,8 +32,15 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
     public function deleteOne() {
         $this->checkLogin('admin');
         $id = $this->checkParam('id');
+        $user_name = $this->user_info['username'];
+        $sql_check = "SELECT * FROM api_info where id={$id} and create_user='{$user_name}'";
         $sql = "DELETE FROM api_info where id={$id}";
         $db = parent::getDbApiDocs();
+        $check_result = $db->GetOne($sql_check);
+        if (empty($check_result)) {
+            $this->error(203);
+        }
+
         $result = $db->query($sql);
         if ($db->affected_rows === 1) {
             $this->success($result);
@@ -68,6 +76,7 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
             'create_user' => $this->user_info['username'],
             'add_time' => date('Y-m-d H:i:s'),
             'label_id' => $arr_api_data['label_id'],
+            'create_version' => $this->current_version,
         );
         // check url
         $url = strtolower($info['url']);
@@ -106,19 +115,20 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
 
         $db = parent::getDbApiDocs();
 
-        $set_info=array(
-            'name'=>$name,
-            'url'=>$url,
-            'desp'=>$desp,
-            'input_params'=>$input_params,
-            'output_params'=>$output_params,
-            'last_modify_user'=>$last_modify_user,
-            'update_time'=>$update_time,
-            'label_id'=>$label_id,
+        $set_info = array(
+            'name' => $name,
+            'url' => $url,
+            'desp' => $desp,
+            'input_params' => $input_params,
+            'output_params' => $output_params,
+            'last_modify_user' => $last_modify_user,
+            'update_time' => $update_time,
+            'label_id' => $label_id,
+            'update_version' => $this->current_version,
         );
-        $where="id={$id}";
+        $where = "id={$id}";
 
-        $result = $db->Update($set_info,$where,'api_info');
+        $result = $db->Update($set_info, $where, 'api_info');
 
         if ($db->affected_rows === 1) {
             $this->success($result);
@@ -129,6 +139,16 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
 
     public function getAllLabel() {
         $sql = "SELECT * FROM `label_info`;";
+        $db = parent::getDbApiDocs();
+        $result = $db->Select($sql);
+        $this->success($result);
+    }
+
+    public function getAllListVersion() {
+        $version = $this->checkParam('version');
+        $sql = "SELECT a.*,l.label_name,l.sort,l.id as label_id
+                FROM `api_info_gen_{$version}` a LEFT JOIN label_info l on a.label_id=l.id
+                order by sort desc,a.id asc;";
         $db = parent::getDbApiDocs();
         $result = $db->Select($sql);
         $this->success($result);

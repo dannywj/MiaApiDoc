@@ -9,7 +9,7 @@ namespace ApiDocs\Api\Docs;
 
 class Content extends \ApiDocs\Api\Base\ApiBase {
     public function getAll() {
-        $sql = "SELECT * FROM content_info";
+        $sql = "SELECT id,title,project_id,create_user,last_modify_user,add_time,update_time FROM content_info";
         $db = parent::getDbApiDocs();
         $result = $db->Select($sql);
         $this->success($result);
@@ -77,8 +77,14 @@ class Content extends \ApiDocs\Api\Base\ApiBase {
     public function deleteOne() {
         $this->checkLogin('admin');
         $id = $this->checkParam('id');
+        $user_name = $this->user_info['username'];
+        $sql_check = "SELECT * FROM content_info where id={$id} and create_user='{$user_name}'";
         $sql = "DELETE FROM content_info where id={$id}";
         $db = parent::getDbApiDocs();
+        $check_result = $db->GetOne($sql_check);
+        if (empty($check_result)) {
+            $this->error(203);
+        }
         $result = $db->query($sql);
         if ($db->affected_rows === 1) {
             $this->success($result);

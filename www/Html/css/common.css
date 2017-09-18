@@ -161,3 +161,13 @@ td {
     border: 1px solid #ccc;
     padding: .1em .25em;
 }
+.version_li {
+    list-style-type: none;
+    line-height: 30px;
+}
+.v_btn{
+    margin-left: 10px;
+}
+.green{
+    color: green;
+}

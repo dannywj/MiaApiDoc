@@ -279,13 +279,11 @@ function generatePHPCode(api_data) {
         result += '*/' + line;
 
         result += 'public function {0} () {'.format(api_data.api_url.split('/')[1] ? api_data.api_url.split('/')[1] : api_data.api_url) + line;
-        result += tab + '$params = $this->input->post("params");' + line;
-        result += tab + '$arr_params = json_decode($params, true);' + line;
 
         if (api_data.input_params && api_data.input_params.length > 0) {
             result += line;
             api_data.input_params.forEach(function (val, index, arr) {
-                result += tab + "${0} = isset($arr_params['{0}']) ? trim($arr_params['{0}']) : '';".format(val.name);
+                result += tab + "${0}=$this->checkParam('{0}');".format(val.name);
                 result += line;
             })
         }

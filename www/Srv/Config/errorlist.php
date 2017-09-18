@@ -25,7 +25,7 @@ return [
 
     //======2xx类错误：用户授权相关======
     201 => [
-        'message' => '用户请求非法',
+        'message' => '用户请求非法,请登录',
         'info' => 'Invalid request.',
     ],
     202 => [
@@ -36,7 +36,10 @@ return [
         'message' => '没有操作权限',
         'info' => 'Invalid permission.',
     ],
-
+    204 => [
+        'message' => '旧密码错误',
+        'info' => 'Invalid old password.',
+    ],
     //======3xx类错误：数据相关======
     301 => [
         'message' => '没有指定的数据',

@@ -47,6 +47,10 @@ class Api {
         }
         $this->_api_path = $service;
         $this->_api_function = $function;
+        global $api_path;
+        global $api_function;
+        $api_path = $this->_api_path;
+        $api_function = $this->_api_function;
     }
 
     /**

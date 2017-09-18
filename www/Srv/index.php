@@ -5,7 +5,7 @@
  * 2015-07-20
  */
 define('ENV', 'online');
-define('DEBUG', false);
+define('DEBUG', true);
 require(__DIR__ . '/Core/Init.php');
 $api = new  ApiDocs\Api\Api();
 $api->init();

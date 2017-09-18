@@ -146,6 +146,21 @@ function redMarkWiki(str) {
     return str.replace(/\]\]/g, ")]]");
 }
 
+function redMarkVersion(create_version, update_version, current_version) {
+    create_version_num = parseInt(create_version ? create_version.replaceAll('_', '') : 0);
+    update_version_num = parseInt(update_version ? update_version.replaceAll('_', '') : 0);
+    current_version_num = parseInt(current_version ? current_version.replaceAll('_', '') : 0);
+    var result = '';
+    if (create_version_num >= current_version_num) {
+        result = "&nbsp;<span class='green'>[add in {0}]</span>".format(create_version.replaceAll('_', '.'));
+    }
+
+    if (update_version_num >= current_version_num) {
+        result = "&nbsp;<span class='green'>[update in {0}]</span>".format(update_version.replaceAll('_', '.'));
+    }
+    return result;
+}
+
 function formatUrlKey(url) {
     return url.replaceAll("/", "_").TrimStr('_');
 }

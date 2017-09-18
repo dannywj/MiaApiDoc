@@ -30,8 +30,14 @@ class Struct extends \ApiDocs\Api\Base\ApiBase {
     public function deleteOne() {
         $this->checkLogin('admin');
         $id = $this->checkParam('id');
+        $user_name = $this->user_info['username'];
+        $sql_check = "SELECT * FROM struct_info where id={$id} and create_user='{$user_name}'";
         $sql = "DELETE FROM struct_info where id={$id}";
         $db = parent::getDbApiDocs();
+        $check_result = $db->GetOne($sql_check);
+        if (empty($check_result)) {
+            $this->error(203);
+        }
         $result = $db->query($sql);
         if ($db->affected_rows === 1) {
             $this->success($result);
@@ -100,5 +106,13 @@ class Struct extends \ApiDocs\Api\Base\ApiBase {
         } else {
             $this->error(103);
         }
+    }
+
+    public function getAllListVersion() {
+        $version = $this->checkParam('version');
+        $sql = "SELECT * FROM struct_info_gen_{$version} ORDER BY name ASC ";
+        $db = parent::getDbApiDocs();
+        $result = $db->Select($sql);
+        $this->success($result);
     }
 }

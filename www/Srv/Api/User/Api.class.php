@@ -66,4 +66,22 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
             $this->success(null);
         }
     }
+
+    public function updatePassword(){
+        $this->checkLogin();
+        $old_password = $this->checkParam('old_password');
+        $new_password = $this->checkParam('new_password');
+        $current=$this->user_info['password'];
+        if ($current!=md5($old_password)) {
+            $this->error(204);
+        }
+        $db = parent::getDbApiDocs();
+
+        $set_info = array(
+            'password' => md5($new_password),
+        );
+        $where = "id={$this->user_info['user_id']}";
+        $result = $db->Update($set_info, $where, 'user_info');
+        $this->success(true);
+    }
 }

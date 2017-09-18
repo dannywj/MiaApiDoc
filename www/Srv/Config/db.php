@@ -8,7 +8,7 @@ return [
     'online'=>[
         'ApiDocs' => [
             'host' => 'localhost',
-            'dbname' => 'mia',
+            'dbname' => 'mia_api_docs',
             'user' => 'root',
             'password' => 'root',
             'charset' => 'utf8',

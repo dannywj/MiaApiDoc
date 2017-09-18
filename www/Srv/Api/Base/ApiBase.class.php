@@ -14,13 +14,12 @@ class ApiBase {
     private $_auth_id;
     protected $is_login = false;
     protected $user_info;
+    protected $current_version;
 
     public function __construct($check_auth = true) {
         if ($check_auth) {
-            //check apikey ,auth_id
             if (empty($_COOKIE['auth_id'])) {
                 $this->is_login = false;
-                return false;
             }
             $this->_auth_id = $_COOKIE['auth_id'];
             //check account
@@ -30,7 +29,19 @@ class ApiBase {
             } else {
                 $this->is_login = true;
             }
+            // check permission
+            $permission = new \ApiDocs\Api\Permission\Api();
+            $role = $permission->getUserRole($this->user_info);
+            $permission_result = $permission->checkUserRole($role);
+            if (!$permission_result) {
+                if ($role == 'guest') {
+                    $this->error(201);//need login
+                } else {
+                    $this->error(203);
+                }
+            }
         }
+        $this->getCurrentVersion();
     }
 
     private function getUserInfoByAuth($auth_id) {
@@ -47,19 +58,29 @@ class ApiBase {
         }
     }
 
-    public function checkLogin($role = null) {
-        if (!$this->is_login) {
-            $this->error(201);
+    private function getCurrentVersion() {
+        $sql = "SELECT version FROM version_info ORDER BY id desc limit 1";
+        $db = $this->getDbApiDocs();
+        $result = $db->GetOne($sql);
+        if (!empty($result)) {
+            $this->current_version = $result['version'];
+        } else {
+            throw new ApiException("Not find default version");
         }
-        if (!empty($role)) {
-            // check role
-            if ($role == 'admin' && $this->user_info['type'] == 1) {
-                //ok
-            } else {
-                $this->error(203);
-            }
-        }
+    }
 
+    public function checkLogin($role = null) {
+//        if (!$this->is_login) {
+//            $this->error(201);
+//        }
+//        if (!empty($role)) {
+//            // check role
+//            if ($role == 'admin' && $this->user_info['type'] == 1) {
+//                //ok
+//            } else {
+//                $this->error(203);
+//            }
+//        }
     }
 
     public function getDbApiDocs() {
