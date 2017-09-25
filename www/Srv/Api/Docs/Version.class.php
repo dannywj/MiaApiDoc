@@ -17,8 +17,8 @@ class Version extends \ApiDocs\Api\Base\ApiBase {
 
 
     public function addOne() {
-        $this->checkLogin('admin');
         $version = $this->checkParam('version');
+        $this->generateDoc($this->current_version);
         $info = array(
             'version' => $version,
             'create_time' => date('Y-m-d H:i:s'),
@@ -32,9 +32,7 @@ class Version extends \ApiDocs\Api\Base\ApiBase {
         }
     }
 
-    public function generateDoc() {
-        $this->checkLogin('admin');
-        $version = $this->checkParam('version');
+    private function generateDoc($version) {
         $gen_api_sql = "create table api_info_gen_{$version} select * from api_info";
         $gen_struct_sql = "create table struct_info_gen_{$version} select * from struct_info";
         $db = parent::getDbApiDocs();
@@ -46,7 +44,7 @@ class Version extends \ApiDocs\Api\Base\ApiBase {
         if (!$result) {
             $this->error(103);
         }
-        $this->success(true);
+        return true;
     }
 
 }
