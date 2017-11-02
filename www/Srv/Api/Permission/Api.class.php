@@ -38,6 +38,7 @@ class Api {
             'User\Api\updatePassword' => ['dev'],
 
             'Docs\Api\getAllList' => ['dev', 'guest'],
+            'Docs\Api\getAllListTitle' => ['dev', 'guest'],
             'Docs\Api\getOne' => ['dev', 'guest'],
             'Docs\Api\getAllLabel' => ['dev', 'guest'],
             'Docs\Api\getAllListVersion' => ['dev', 'guest'],

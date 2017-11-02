@@ -5,11 +5,11 @@
 // Global
 var api_data_list = [];
 var struct_data_list = [];
+var request_count = 0;
 
 // Data
-function getAllApiList() {
-    loadingDiv('#sp_result');
-    ajaxGetJson('Docs/Api', 'getAllList', {order_by: 'url asc'}, function (re) {
+function getApiTitle() {
+    ajaxGetJson('Docs/Api', 'getAllListTitle', {}, function (re) {
         //ul-list
         var item_list = {};
         var html = '';
@@ -19,7 +19,30 @@ function getAllApiList() {
                 item_list[(re[i]['sort'] + re[i]['label_name'])] = [];
             }
             item_list[(re[i]['sort'] + re[i]['label_name'])].push(re[i]);
+        }
 
+        // 循环对象内key，构造列表
+        for (var key in item_list) {
+            html += '<span class="api_list_label">{0}</span>'.format(key.replace(/[\d]+/, ''));
+            for (var j = 0; j < item_list[key].length; j++) {
+                var info = item_list[key][j];
+                var user = info.last_modify_user ? info.last_modify_user : info.create_user;
+                user = user.split('@')[0];
+                html += '<li><a href="#{0}">{1}  -  {2}   &nbsp;&nbsp; <span class="gray">[developer:{3}]</span></a></li>'.format(formatUrlKey(info.url), info.url, redMarkHtml(info.name) + redMarkVersion(info.create_version, info.update_version, info.current_version), user);
+            }
+        }
+        $("#ul_apilist").html(html);
+        checkLoadingFinish();
+    }, null, true);
+}
+
+function getAllApiList() {
+    ajaxGetJson('Docs/Api', 'getAllList', {order_by: 'url asc'}, function (re) {
+        //ul-list
+        var item_list = {};
+        var html = '';
+        // 第一次循环，构造label_name为key的JS对象（关联数组）
+        for (var i = 0; i < re.length; i++) {
             // 构造api_data_list
             var item = {
                 api_name: re[i].name,
@@ -35,21 +58,10 @@ function getAllApiList() {
 
         }
 
-        // 循环对象内key，构造列表
-        for (var key in item_list) {
-            html += '<span class="api_list_label">{0}</span>'.format(key.replace(/[\d]+/, ''));
-            for (var j = 0; j < item_list[key].length; j++) {
-                var info = item_list[key][j];
-                var user = info.last_modify_user ? info.last_modify_user : info.create_user;
-                user = user.split('@')[0];
-                html += '<li><a href="#{0}">{1}  -  {2}   &nbsp;&nbsp; <span class="gray">[developer:{3}]</span></a></li>'.format(formatUrlKey(info.url), info.url, redMarkHtml(info.name) + redMarkVersion(info.create_version, info.update_version, info.current_version), user);
-            }
-        }
-        $("#ul_apilist").html(html);
-
         bindDetail();
         scrollHash();
-    }, null, true);
+        checkLoadingFinish();
+    });
 }
 
 function bindDetail() {
@@ -95,6 +107,7 @@ function getAllStruct() {
                 }
             }
         });
+        checkLoadingFinish();
     });
 }
 
@@ -125,6 +138,9 @@ function scrollHash() {
 
 // Init
 $(function () {
+    // 加载请求动画，完成后消失
+    $("#sp_all_div_title").append('<img style="margin-left: 10px;" src="images/small_loading.gif" alt="">');
+    getApiTitle();
     getAllApiList();
     getAllStruct();
     getAllContent();
@@ -142,5 +158,13 @@ function getAllContent() {
             html += '<li><a target="_blank" href="content_view.html?id={0}">{1}</a></li>'.format(info.id, info.title);
         }
         $("#ul_content_list").html(html);
+        checkLoadingFinish();
     });
+}
+
+function checkLoadingFinish() {
+    request_count++;
+    if (request_count == 4) {
+        $("#sp_all_div_title").find("img").remove();
+    }
 }

@@ -17,6 +17,16 @@ class Api extends \ApiDocs\Api\Base\ApiBase {
         $this->success($result);
     }
 
+    public function getAllListTitle() {
+        $sql = "SELECT a.id,a.name,a.url,a.project_id,a.label_id,a.create_version,a.update_version,a.create_user,a.last_modify_user,
+                l.label_name,l.sort,l.id as label_id ,(SELECT version from version_info ORDER BY id desc limit 1) as current_version
+                FROM `api_info` a LEFT JOIN label_info l on a.label_id=l.id
+                order by sort desc,a.id asc;";
+        $db = parent::getDbApiDocs();
+        $result = $db->Select($sql);
+        $this->success($result);
+    }
+
     public function getOne() {
         $id = $this->checkParam('id');
         $sql = "SELECT * FROM api_info where id={$id}";
