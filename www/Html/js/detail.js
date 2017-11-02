@@ -59,7 +59,6 @@ function getAllApiList() {
         }
 
         bindDetail();
-        scrollHash();
         checkLoadingFinish();
     });
 }
@@ -166,5 +165,6 @@ function checkLoadingFinish() {
     request_count++;
     if (request_count == 4) {
         $("#sp_all_div_title").find("img").remove();
+        scrollHash();
     }
 }
