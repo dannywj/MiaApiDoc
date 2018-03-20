@@ -127,9 +127,9 @@ table.wiki td {
     left: 95%;
     bottom: 5%;
     display: block;
-    height: 48px;
-    width: 48px;
-    background: url("../images/r_top.png");
+    height: 64px;
+    width: 50px;
+    background: url("../images/top_rocket.png") no-repeat center center;
 }
 
 .api_list_label {
